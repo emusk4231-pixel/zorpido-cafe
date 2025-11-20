@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Staff Login | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Secure staff login portal for Zorpido employees. Access your staff account with enhanced security features.">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'staff_login/css/style.css' %}">
+
+<div class="staff-login-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="staff-card">
+                    <!-- Header -->
+                    <div class="staff-header">
+                        <div class="staff-badge-icon">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <h3>Staff Portal</h3>
+                        <p>Secure staff member access</p>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="staff-body">
+                        <!-- Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-staff mb-3">
+                                    <i class="bi bi-{% if message.tags == 'danger' %}exclamation-triangle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %} me-2"></i>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <!-- Login Form -->
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Non-field errors -->
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger alert-staff mb-3">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Next parameter -->
+                            {% if next %}
+                                <input type="hidden" name="next" value="{{ next }}" />
+                            {% endif %}
+                            
+                            <!-- Username Field -->
+                            <div class="mb-3">
+                                <label class="form-label-staff">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                    {{ form.username.label }}
+                                </label>
+                                <div class="input-group-staff">
+                                    <input 
+                                        type="text" 
+                                        name="username" 
+                                        class="form-control form-control-staff" 
+                                        placeholder="Enter your staff username" 
+                                        required
+                                        autocomplete="username"
+                                    >
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="text-danger small mt-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Password Field -->
+                            <div class="mb-4">
+                                <label class="form-label-staff">
+                                    <i class="bi bi-key-fill"></i>
+                                    {{ form.password.label }}
+                                </label>
+                                <div class="input-group-staff">
+                                    <input 
+                                        type="password" 
+                                        name="password" 
+                                        class="form-control form-control-staff" 
+                                        placeholder="Enter your secure password" 
+                                        required
+                                        autocomplete="current-password"
+                                    >
+                                </div>
+                                {% if form.password.errors %}
+                                    <div class="text-danger small mt-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.password.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-staff-login">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Secure Login
+                            </button>
+                        </form>
+
+                        <!-- Security Badge -->
+                        <div class="security-badge">
+                            <i class="bi bi-lock-fill"></i>
+                            <span>Protected by SSL encryption</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Customer Link -->
+                <div class="customer-link">
+                    <span>Not a staff member?</span>
+                    <a href="{% url 'users:login' %}">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Customer Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

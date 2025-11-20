@@ -1,0 +1,972 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | Zorpido{% endblock %}
+
+{% block meta_description %}
+<!-- ✅ SEO & Social Meta Tags -->
+<meta name="description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together. Relax, dine, and enjoy a taste that feels like home.">
+
+<!-- ✅ Open Graph (for Facebook, Instagram, etc.) -->
+<meta property="og:title" content="Home | Zorpido Café">
+<meta property="og:description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together. Relax, dine, and enjoy a taste that feels like home.">
+<meta property="og:image" content="{% static 'images/featured/home_featured.png' %}">
+<meta property="og:url" content="https://zorpido.com/">
+<meta property="og:type" content="website">
+
+<!-- ✅ Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Home | Zorpido Café">
+<meta name="twitter:description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together.">
+<meta name="twitter:image" content="{% static 'images/featured/home_featured.png' %}">
+{% endblock %}
+
+
+
+
+{% block content %}
+
+
+<!-----------------------
+Hero Section 
+----------------------->
+<section id="hero" class="zorpido-hero-section">
+  <div class="container">
+    <div class="hero-decorations">
+      <div class="floating-shape shape-1"></div>
+      <div class="floating-shape shape-2"></div>
+      <div class="floating-shape shape-3"></div>
+      <div class="floating-emoji emoji-1">☕</div>
+      <div class="floating-emoji emoji-2">🍰</div>
+      <div class="floating-emoji emoji-3">❤️</div>
+      <div class="floating-emoji emoji-4">⭐</div>
+      <div class="particle-container" id="particles"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-text">🎉 Welcome to Zorpido</span>
+        <div class="badge-shine"></div>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="title-word word-1">
+          Cozy <span class="highlight-red">Vibes,</span>
+        </span>
+        <span class="title-word word-2">
+          Perfect <span class="highlight-yellow">Moments,</span>
+        </span>
+        <span class="title-word word-3">
+          Beautiful <span class="highlight-blue">People...</span>
+        </span>
+      </h1>
+
+      <div class="hero-subtitle-wrapper">
+        <p class="hero-subtitle">
+          Order, Earn, Zorpido does it all with intelligent automation, rewards, and seamless experiences.
+        </p>
+        <div class="subtitle-underline"></div>
+      </div>
+
+      <div class="feature-pills">
+        <span class="pill pill-1">
+          <i class="bi bi-lightning-charge-fill"></i> Fast Service
+        </span>
+        <span class="pill pill-2">
+          <i class="bi bi-star-fill"></i> Loyalty Rewards
+        </span>
+      </div>
+
+      <div class="hero-buttons">
+        <a href="{% url 'menu:list' %}" class="hero-btn btn-primary">
+          <span class="btn-bg"></span>
+          <span class="btn-icon">
+            <i class="bi bi-cup-hot-fill"></i>
+          </span>
+          <span class="btn-text">View Menu</span>
+          <span class="btn-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+            </svg>
+          </span>
+          <span class="btn-shine"></span>
+        </a>
+
+        <a href="{% url 'users:register' %}" class="hero-btn btn-secondary">
+          <span class="btn-bg"></span>
+          <span class="btn-icon">
+            <i class="bi bi-gift-fill"></i>
+          </span>
+          <span class="btn-text">Join Loyalty Program</span>
+          <span class="btn-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+            </svg>
+          </span>
+          <span class="btn-shine"></span>
+        </a>
+      </div>
+
+      <div class="social-proof">
+        <div class="proof-item">
+          <div class="proof-avatars">
+            <div class="avatar avatar-1">👤</div>
+            <div class="avatar avatar-2">👤</div>
+            <div class="avatar avatar-3">👤</div>
+            <div class="avatar avatar-plus">+99</div>
+          </div>
+          <div class="proof-text">
+            <strong>100+</strong> happy customers
+          </div>
+        </div>
+        <div class="proof-divider"></div>
+        <div class="proof-item">
+          <div class="proof-rating">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-half"></i>
+          </div>
+          <div class="proof-text">
+            <strong>4.8/5</strong> rating
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span class="scroll-text">Scroll to explore</span>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="#FFFFFF" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,122.7C1248,107,1344,85,1392,74.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+  </div>
+</section>
+
+<!---------------------
+  Featured Image Slider Section
+  ---------------------------- -->
+{% if featured_images %}
+<section class="zorpido-featured-slider">
+  <div class="container">
+    <div class="slider-header">
+      <div class="header-icon">🖼️</div>
+      <h1 class="section-title">Featured Highlights</h1>
+      <p class="section-subtitle">Discover what makes us special</p>
+    </div>
+    <div class="featured-slider-wrapper">
+      <div class="slider-decoration decoration-left"></div>
+      <div class="slider-decoration decoration-right"></div>
+      <div class="zorpido-carousel" id="zorpidoFeaturedCarousel">
+        <div class="carousel-track">
+          {% for img in featured_images %}
+          <div class="carousel-slide {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            <div class="slide-inner">
+              <div class="image-container">
+                <div class="image-overlay"></div>
+                <img src="{{ img.image.url }}" alt="{{ img.title }}" class="featured-image">
+                
+                {% if img.title or img.description %}
+                <div class="image-info-overlay">
+                  {% if img.title %}
+                  <h3 class="image-title">{{ img.title }}</h3>
+                  {% endif %}
+                  {% if img.description %}
+                  <p class="image-description">{{ img.description }}</p>
+                  {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="zoom-icon">
+                  <i class="bi bi-zoom-in"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="carousel-controls">
+          <button class="control-arrow arrow-prev" aria-label="Previous slide">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button class="control-arrow arrow-next" aria-label="Next slide">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="thumbnail-navigation">
+          <div class="thumbnail-track">
+            {% for img in featured_images %}
+            <button class="thumbnail-item {% if forloop.first %}active{% endif %}" 
+                    data-index="{{ forloop.counter0 }}"
+                    aria-label="Go to slide {{ forloop.counter }}">
+              <img src="{{ img.image.url }}" alt="{{ img.title }}">
+              <div class="thumbnail-overlay"></div>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="progress-indicators">
+          {% for img in featured_images %}
+          <div class="progress-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            <div class="dot-fill"></div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="slide-counter">
+          <span class="current-slide">1</span>
+          <span class="counter-separator">/</span>
+          <span class="total-slides">{{ featured_images|length }}</span>
+        </div>
+
+        <button class="autoplay-toggle active" aria-label="Toggle autoplay">
+          <i class="bi bi-pause-fill pause-icon"></i>
+          <i class="bi bi-play-fill play-icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fullscreen-modal" id="fullscreenModal">
+    <button class="modal-close" aria-label="Close fullscreen">
+      <i class="bi bi-x-lg"></i>
+    </button>
+    <div class="modal-content">
+      <img src="" alt="" id="fullscreenImage">
+    </div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn modal-prev" aria-label="Previous image">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="modal-nav-btn modal-next" aria-label="Next image">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-----------------------
+ Why Choose Zorpido 
+ ------------------------->
+<section id="why-choose" class="zorpido-why-choose">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span class="badge-icon">⭐</span>
+        <span class="badge-sparkle sparkle-1">✨</span>
+        <span class="badge-sparkle sparkle-2">✨</span>
+        <span class="badge-sparkle sparkle-3">✨</span>
+      </div>
+      <h2 class="section-title">
+        Why Choose <span class="highlight-text">Zorpido</span>?
+      </h2>
+      <p class="section-subtitle">
+        Experience the future of cafe operations with our comprehensive AI-powered ecosystem
+      </p>
+      <div class="title-underline">
+        <span class="underline-dot"></span>
+        <span class="underline-line"></span>
+        <span class="underline-dot"></span>
+      </div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-gift-fill feature-icon"></i>
+            </div>
+            <div class="icon-badge">🎁</div>
+          </div>
+          <h5 class="feature-title">Loyalty Program</h5>
+          <p class="feature-description">
+            Earn XP, collect badges, and unlock exclusive rewards every time you order. 
+            Our gamified loyalty system keeps your visits exciting and rewarding.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-cup-hot-fill feature-icon"></i>
+            </div>
+            <div class="icon-badge">☕</div>
+          </div>
+          <h5 class="feature-title">Good Vibes & Great Food</h5>
+          <p class="feature-description">
+            Enjoy the perfect blend of ambiance and taste. We serve up delicious meals 
+            and drinks that lift your mood and fuel your day.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-emoji-smile-fill feature-icon"></i>
+            </div>
+            <div class="icon-badge">😊</div>
+          </div>
+          <h5 class="feature-title">Friendly Environment</h5>
+          <p class="feature-description">
+            Our cafe isn't just about food — it's about people. Experience warm hospitality, 
+            cozy seating, and a place that feels like home.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-heart-fill feature-icon"></i>
+            </div>
+            <div class="icon-badge">❤️</div>
+          </div>
+          <h5 class="feature-title">Quality Made Affordable</h5>
+          <p class="feature-description">
+            Great taste doesn't have to break the bank. We offer high-quality food and drinks 
+            at prices that fit your budget.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-lightning-fill feature-icon"></i>
+            </div>
+            <div class="icon-badge">⚡</div>
+          </div>
+          <h5 class="feature-title">Fast & Seamless Service</h5>
+          <p class="feature-description">
+            Whether you're dining in or taking out, our efficient service ensures you never 
+            have to wait long for your favorites.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="icon-wrapper">
+            <div class="icon-circle">
+              <i class="bi bi-wifi feature-icon"></i>
+            </div>
+            <div class="icon-badge">📶</div>
+          </div>
+          <h5 class="feature-title">Free Wi-Fi & Charging</h5>
+          <p class="feature-description">
+            Stay connected while you relax or work. We provide free high-speed internet and 
+            accessible charging points throughout the cafe.
+          </p>
+          <div class="card-footer">
+          </div>
+        </div>
+      </div>
+<div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+  <div class="card-glow"></div>
+  <div class="card-inner">
+    <div class="icon-wrapper">
+      <div class="icon-circle">
+        <i class="bi bi-people feature-icon"></i>
+      </div>
+      <div class="icon-badge">🫶</div>
+    </div>
+    <h5 class="feature-title">Community at Heart</h5>
+    <p class="feature-description">
+      Zorpido is more than a cafe, it’s your spot. A warm place to connect,
+      relax, and feel at home.
+    </p>
+    <div class="card-footer"></div>
+  </div>
+</div>
+<div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+  <div class="card-glow"></div>
+  <div class="card-inner">
+    <div class="icon-wrapper">
+      <div class="icon-circle">
+        <i class="bi bi-emoji-smile feature-icon"></i>
+      </div>
+      <div class="icon-badge">🤝</div>
+    </div>
+    <h5 class="feature-title">Team Who Care</h5>
+    <p class="feature-description">
+      We listen, we help, and we make sure you feel valued every time you visit.
+    </p>
+    <div class="card-footer"></div>
+  </div>
+</div>
+
+
+    </div>
+
+    <div class="cta-section">
+      <div class="cta-content">
+        <h3 class="cta-title">Ready to Experience the Difference?</h3>
+        <p class="cta-subtitle">Join hundreds of satisfied customers who choose Zorpido every day</p>
+        <div class="cta-buttons">
+          <a href="{% url 'users:register' %}" class="btn-primary-cta">
+            <i class="bi bi-cup-straw"></i> Be a Zorpidian!
+          </a>
+          <a href="{% url 'website:contact' %}" class="btn-secondary-cta">
+            <i class="bi bi-chat-dots"></i> Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-elements">
+      <div class="float-element element-1">☕</div>
+      <div class="float-element element-2">🍰</div>
+      <div class="float-element element-3">🎉</div>
+      <div class="float-element element-4">⭐</div>
+      <div class="float-element element-5">💝</div>
+    </div>
+  </div>
+</section>
+
+<!-- ----------------
+ Loyalty Programs -
+ --------------------->
+<section class="loyalty-program-section">
+  <div class="container">
+    <h1 class="section-title text-center">
+      <span class="text-danger">Zorpido's</span> Loyalty Program
+    </h1>
+    <p class="section-subtitle text-center">
+      Earn points with every purchase and unlock exclusive tiers of benefits. 
+      The more you visit, the more you get back!
+    </p>
+    <div class="row align-items-center loyalty-content">
+      <div class="col-lg-6">
+        <h2 class="loyalty-heading">Join Our Loyalty Program</h2>
+        <p class="loyalty-lead">Earn 10 points for every NPR 100 spent!</p>
+        
+        <ul class="benefits-list">
+          <li>
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Earn points on every purchase</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Redeem points for discounts</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Exclusive member-only offers</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Birthday specials</span>
+          </li>
+        </ul>
+        
+        <a href="{% url 'users:register' %}" class="btn btn-danger loyalty-cta">
+          Join Zorpi's Loyalty Program
+        </a>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="loyalty-img-wrapper text-center">
+          <img src="{% static 'images/loyalty-program.jpg' %}" 
+               alt="Loyalty Program" 
+               class="loyalty-img">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tiers Section -->
+    <div class="tiers-section">
+      <h2 class="section-title text-center mb-5">
+        <span class="text-danger">Zorpido's</span> Loyalty Program Tiers
+      </h2>
+
+      <div class="row g-4">
+        <!-- Starter -->
+        <div class="col-lg-3 col-md-6">
+          <div class="reward-card starter" data-tier="starter">
+            <div class="icon"><i class="fa-solid fa-leaf reward-icon"></i></div>
+            <h5>Zorpido Starter</h5>
+            <p class="points">0 – 1000 pts</p>
+            <p class="desc">No offers yet – Keep sipping to unlock your first perks!</p>
+          </div>
+        </div>
+
+        <!-- Select -->
+        <div class="col-lg-3 col-md-6">
+          <div class="reward-card select">
+            <div class="icon"><i class="bi bi-cup-straw"></i></div>
+            <h5>Zorpido Select</h5>
+            <p class="points">1001 – 2000 pts</p>
+            <p class="desc">5% discount on all snacks</p>
+          </div>
+        </div>
+
+        <!-- Gold+ -->
+        <div class="col-lg-3 col-md-6">
+          <div class="reward-card gold">
+            <div class="icon"><i class="bi bi-gem"></i></div>
+            <h5>Zorpido Gold+</h5>
+            <p class="points">2001 – 5000 pts</p>
+            <p class="desc">10% discount on snacks and sips</p>
+          </div>
+        </div>
+
+        <!-- Elite -->
+        <div class="col-lg-3 col-md-6">
+          <div class="reward-card elite">
+            <span class="elite-badge">Zorpido Elite</span>
+            <div class="icon"><i class="bi bi-stars"></i></div>
+            <h5>Zorpido Elite</h5>
+            <p class="points">5001+ pts</p>
+            <p class="desc">
+              15% discount on snacks and sips plus Age = % Off (up to 30%) 
+              on Snacks & Non-Alcoholic Drinks
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!----------------
+ FEATURED SECTION
+ -------------------- -->
+<section class="featured-menu-section py-5">
+  <div class="container">
+    <h1 class="text-center fw-bold mb-5"><span class="text-danger">Zorpido's </span>Featured Menu</h1>
+    <div class="row g-4">
+      {% if featured_items %}
+        {% for featured in featured_items %}
+          <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card menu-card glass-card">
+              {% if featured.menu_item.image %}
+                <img src="{{ featured.menu_item.image.url }}" class="card-img-top" alt="{{ featured.menu_item.name }}">
+              {% else %}
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" class="card-img-top" alt="{{ featured.menu_item.name }}">
+              {% endif %}
+              <div class="card-body text-center">
+                <h5 class="card-title fw-bold">{{ featured.menu_item.name }}</h5>
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                  <span class="h5 text-danger mb-2">NPR {{ featured.menu_item.price }}</span>
+                  <button class="btn btn-glass details-btn"
+                    type="button"
+                    data-name="{{ featured.menu_item.name|escapejs }}"
+                    data-description="{{ featured.menu_item.description|escapejs }}"
+                    data-price="{{ featured.menu_item.price }}"
+                    {% if featured.menu_item.image %}
+                      data-image="{{ featured.menu_item.image.url }}"
+                    {% endif %}>
+                    <i class="bi bi-info-circle"></i> Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center">
+          <p class="text-muted">No featured items available at the moment.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="{% url 'menu:list' %}" class="btn btn-register-glow btn-lg">
+        <i class="bi bi-menu-button-wide me-2"></i> View Full Menu
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- -----------------
+ -Details Modal 
+ ------------------------>
+<div class="modal fade" id="dishModal" tabindex="-1" aria-labelledby="dishModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content glass-modal">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="dishModalLabel"></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="dishImage" src="" alt="" class="img-fluid rounded mb-3 modal-img">
+        <p class="lead text-light mb-1 fw-semibold" id="dishPrice"></p>
+        <p id="dishDescription" class="text-light"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- -------------------
+ Details Modal-
+ ---------------------- -->
+<div class="modal fade" id="dishDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dishDetailsTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img id="dishDetailsImage" src="" alt="Dish Image" class="img-fluid rounded" style="max-height:400px; width:100%; object-fit:cover;">
+                    </div>
+                    <div class="col-md-6">
+                        <p id="dishDetailsDescription" class="lead"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-------------------
+ Enhanced Gallery Section
+ --------------------- -->
+<section class="zorpido-gallery-section">
+    <div class="container">
+        <div class="gallery-header">
+            <div class="header-icon-wrapper">
+                <div class="icon-circle">
+                    <i class="bi bi-images"></i>
+                </div>
+                <div class="icon-particles">
+                    <span class="particle p-1"></span>
+                    <span class="particle p-2"></span>
+                    <span class="particle p-3"></span>
+                    <span class="particle p-4"></span>
+                </div>
+            </div>
+            <h1 class="gallery-title">
+                <span class="brand-name">Zorpido's</span> Glimpses
+            </h1>
+            <p class="gallery-subtitle">
+                Capturing moments, creating memories - Experience our vibrant cafe through these snapshots
+            </p>
+            <div class="title-decoration">
+                <span class="decoration-line"></span>
+                <span class="decoration-dot"></span>
+                <span class="decoration-line"></span>
+            </div>
+        </div>
+        {% if gallery_images %}
+        <div class="gallery-grid" id="galleryGrid">
+            {% for image in gallery_images %}
+      <div class="gallery-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'00' }}">
+                <div class="card-wrapper">
+          <div class="image-container" 
+             data-bs-toggle="modal" 
+             data-bs-target="#galleryModal" 
+             data-image="{{ image.image.url }}" 
+             data-title="{{ image.title }}"
+             data-id="{{ image.pk }}"
+             data-index="{{ forloop.counter0 }}">
+                        <img src="{{ image.image.url }}" 
+                             alt="{{ image.title }}" 
+                             class="gallery-image"
+                             loading="lazy">
+                        <div class="image-overlay">
+                            <div class="overlay-content">
+                                {% if image.title %}
+                                <h5 class="image-title">{{ image.title }}</h5>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="corner-badge">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- View Full Gallery Button -->
+        <div class="gallery-cta">
+            <a href="{% url 'website:gallery' %}" class="btn-view-gallery">
+                <span class="btn-bg"></span>
+                <span class="btn-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </span>
+                <span class="btn-text">View Full Gallery</span>
+                <span class="btn-arrow">
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+                <span class="btn-shine"></span>
+            </a>
+        </div>
+
+        {% else %}
+        <div class="gallery-empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-image"></i>
+            </div>
+            <h3>Gallery Coming Soon!</h3>
+            <p>We're curating beautiful moments to share with you. Stay tuned!</p>
+            <div class="empty-decoration">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="gallery-decorations">
+            <div class="deco-shape shape-1"></div>
+            <div class="deco-shape shape-2"></div>
+            <div class="deco-emoji emoji-1">📸</div>
+            <div class="deco-emoji emoji-2">✨</div>
+        </div>
+    </div>
+</section>
+
+<!-------------------
+ Enhanced Gallery Modal
+ ---------------------- -->
+<div class="modal fade zorpido-gallery-modal" id="galleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <button type="button" class="modal-close-btn" data-bs-dismiss="modal" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="modal-header-custom">
+                <h5 class="modal-title-custom" id="galleryModalTitle"></h5>
+                <div class="modal-counter">
+                    <span id="currentImage">1</span> / <span id="totalImages">{{ gallery_images|length }}</span>
+                </div>
+            </div>
+            <div class="modal-body-custom">
+                <div class="image-viewer">
+                    <img id="galleryModalImage" src="" alt="" class="modal-image">
+                    <button class="nav-arrow nav-prev" id="modalPrev">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow nav-next" id="modalNext">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <div class="image-loader">
+                        <div class="loader-spinner"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-custom">
+              <!-- Download and Share removed per UX: modal shows image and a close button only -->
+            </div>
+            <div class="thumbnail-nav" id="thumbnailNav">
+       {% for image in gallery_images %}
+       <div class="thumbnail-item {% if forloop.first %}active{% endif %}" 
+         data-index="{{ forloop.counter0 }}"
+         data-image="{{ image.image.url }}"
+         data-title="{{ image.title }}"
+         data-id="{{ image.pk }}">
+                    <img src="{{ image.image.url }}" alt="{{ image.title }}">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ---------------
+  Testimonials Section 
+  ------------------------->
+<!-- ---------------
+  Enhanced Testimonials Section 
+  ------------------------->
+<section class="zorpido-testimonials">
+  <div class="container">
+    <div class="testimonials-header">
+      <div class="header-badge">
+        <span class="badge-icon">💬</span>
+        <div class="badge-ring"></div>
+      </div>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-subtitle">Real experiences from real people who trust Zorpido</p>
+    </div>
+
+    <div class="floating-quotes">
+      <div class="quote-float quote-1">"</div>
+      <div class="quote-float quote-2">"</div>
+      <div class="quote-float quote-3">"</div>
+      <div class="quote-float quote-4">"</div>
+    </div>
+
+    <div class="testimonial-slider-container">
+      {% if testimonials %}
+        <div class="testimonial-slider">
+          {% for t in testimonials %}
+          <div class="testimonial-slide {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            <div class="slide-content">
+              <div class="customer-image-section">
+                <div class="image-wrapper">
+                  <div class="image-glow"></div>
+                  <div class="image-ring"></div>
+                  {% if t.profile_picture %}
+                    <img src="{{ t.profile_picture.url }}" alt="{{ t.customer_name }}" class="customer-photo">
+                  {% else %}
+                    <img src="{% static 'images/default_profile.png' %}" alt="{{ t.customer_name }}" class="customer-photo">
+                  {% endif %}
+                  <div class="verified-badge">
+                    <i class="bi bi-patch-check-fill"></i>
+                    <div class="verified-pulse"></div>
+                  </div>
+                </div>
+                <div class="customer-info-mobile">
+                  <h3 class="customer-name">{{ t.customer_name }}</h3>
+                  <div class="rating-stars">
+                    {% for i in "12345"|make_list %}
+                      {% if forloop.counter <= t.rating %}
+                        <i class="bi bi-star-fill star-filled"></i>
+                      {% else %}
+                        <i class="bi bi-star star-empty"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <p class="customer-label">
+                    <i class="bi bi-patch-check-fill"></i> Verified Customer
+                  </p>
+                </div>
+              </div>
+
+              <div class="testimonial-content-section">
+                <div class="quote-icon-large">"</div>
+                
+                <div class="rating-stars-desktop">
+                  {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= t.rating %}
+                      <i class="bi bi-star-fill star-filled"></i>
+                    {% else %}
+                      <i class="bi bi-star star-empty"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+                <p class="testimonial-message">{{ t.message }}</p>
+
+                <div class="customer-info-desktop">
+                  <h3 class="customer-name">{{ t.customer_name }}</h3>
+                  <p class="customer-label">
+                    <i class="bi bi-patch-check-fill"></i> Verified Customer
+                  </p>
+                </div>
+
+                <div class="quote-icon-large quote-close">"</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="slider-controls">
+          <button class="control-btn prev-btn" aria-label="Previous testimonial">
+            <i class="bi bi-chevron-left"></i>
+            <span class="btn-ripple"></span>
+          </button>
+          
+          <div class="slider-dots">
+            {% for t in testimonials %}
+            <button class="dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}" aria-label="Go to testimonial {{ forloop.counter }}">
+              <span class="dot-inner"></span>
+            </button>
+            {% endfor %}
+          </div>
+          
+          <button class="control-btn next-btn" aria-label="Next testimonial">
+            <i class="bi bi-chevron-right"></i>
+            <span class="btn-ripple"></span>
+          </button>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+          <div class="progress-glow"></div>
+        </div>
+
+      {% else %}
+        <div class="empty-testimonials">
+          <div class="empty-icon">💭</div>
+          <h3>No Testimonials Yet</h3>
+          <p>Be the first to share your amazing experience with Zorpido!</p>
+          <a href="#" class="btn-share-experience">
+            <i class="bi bi-chat-dots"></i> 
+            <span>Share Your Experience</span>
+            <span class="btn-shine"></span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section id="cta" class="cta-section py-5">
+    <div class="cta-content text-center">
+        <h1 class="cta-title">Let's be a part of Zorpido</h1>
+        <p class="cta-subtitle">Experience the cozy, perfect vibes with beautiful people.</p>
+        <div>
+            <a href="{% url 'users:register' %}" class="cta-button">Register Now</a>
+        </div>
+    </div>
+</section>
+
+
+<script>
+// js of featured menu modal
+document.addEventListener("DOMContentLoaded", function () {
+  const detailsBtns = document.querySelectorAll(".details-btn");
+  const modal = new bootstrap.Modal(document.getElementById("dishModal"));
+  
+  detailsBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const name = btn.getAttribute("data-name");
+      const desc = btn.getAttribute("data-description");
+      const price = btn.getAttribute("data-price");
+      const image = btn.getAttribute("data-image") || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400";
+      
+      document.getElementById("dishModalLabel").innerText = name;
+      document.getElementById("dishDescription").innerText = desc;
+      document.getElementById("dishPrice").innerText = `NPR ${price}`;
+      document.getElementById("dishImage").src = image;
+
+      modal.show();
+    });
+  });
+});
+</script>
+
+{% endblock %}

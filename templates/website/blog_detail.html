@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title }} |Zorpido{% endblock %}
+{% block meta_description %}
+<!-- Meta Description -->
+<meta name="description" content="Read '{{ post.title }}' on Zorpido's blog. Discover insights, tips, and stories from our culinary experts to enhance your dining experience.">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'blog_details/css/style.css' %}">
+
+<section class="article-hero">
+    <div class="container">
+        <div class="article-header">
+            <h1 class="article-title">{{ post.title }}</h1>
+            <div class="article-meta">
+                <div class="meta-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span>{{ post.published_at|date:"F d, Y" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-person-circle"></i>
+                    <span>{{ post.author|default:"Zorpido Team" }}</span>
+                </div>
+                {% if post.read_time %}
+                <div class="meta-item">
+                    <i class="bi bi-clock"></i>
+                    <span>{{ post.read_time }} min read</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <article class="article-container">
+        <!-- Featured Image -->
+        {% if post.featured_image %}
+        <div class="article-featured-image">
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+        
+        <!-- Article Body -->
+        <div class="article-content-card">
+            <div class="article-content">
+                {{ post.content|safe }}
+            </div>
+        </div>
+        
+        <!-- Share Section -->
+        <div class="article-footer">
+            <div class="share-section">
+                <h5>
+                    <i class="bi bi-share me-2"></i>
+                    Share This Article
+                </h5>
+                <div class="share-buttons">
+                    <a href="#" class="share-btn facebook" title="Share on Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="#" class="share-btn twitter" title="Share on Twitter">
+                        <i class="bi bi-twitter-x"></i>
+                    </a>
+                    <a href="#" class="share-btn linkedin" title="Share on LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                    <a href="mailto:?subject={{ post.title }}&body=Check out this article: {{ request.build_absolute_uri }}" class="share-btn email" title="Share via Email">
+                        <i class="bi bi-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to Blog -->
+        <div class="back-to-blog">
+            <p class="text-muted mb-3">Want to read more stories?</p>
+            <a href="{% url 'website:blog_list' %}" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Back to Blog
+            </a>
+        </div>
+    </article>
+</div>
+
+<script src="{% static 'blog_details/js/scripts.js' %}"></script>
+{% endblock %}

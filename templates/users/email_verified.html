@@ -1,0 +1,63 @@
+
+{% extends 'base.html' %}
+{% block title %}Email Verified | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together. Relax, dine, and enjoy a taste that feels like home.">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'email_verified/css/style.css' %}">
+<div class="verify-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="verify-card">
+                    <div class="verify-icon-wrapper">
+                        {% if user.is_email_verified %}
+                            <div class="verify-icon success">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        {% else %}
+                            <div class="verify-icon error">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="verify-body">
+                        <h2>
+                            {% if user.is_email_verified %}
+                                Email Verified Successfully!
+                            {% else %}
+                                Verification Failed
+                            {% endif %}
+                        </h2>
+                        
+                        <p>
+                            {% if user.is_email_verified %}
+                                Your email has been verified successfully. You can now log in to your account and start enjoying our services.
+                            {% else %}
+                                {{ error|default:"The verification link is invalid or has expired. Please request a new verification email." }}
+                            {% endif %}
+                        </p>
+                        
+                        <a href="{% url 'users:login' %}" class="btn btn-verify">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Go to Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Email verification disabled</h2>
+  <p>This deployment does not use email verification. You can log in with your registered email and password.</p>
+  <a href="{% url 'users:login' %}" class="btn btn-primary">Go to Login</a>
+</div>
+{% endblock %}

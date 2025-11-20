@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Seller Details | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="View and manage details for each seller in the Zorpido POS system. Access sales history, contact information, and performance metrics.">
+{% endblock %}
+{% block content %}
+<style>
+:root {
+  --primary-red: #DC2626;
+  --secondary-red: #EF4444;
+  --accent-yellow: #FBBF24;
+  --light-yellow: #FEF3C7;
+  --dark-red: #991B1B;
+}
+
+.detail-container {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+  color: white;
+  padding: 2rem;
+  
+
+.table-custom thead {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+  color: var(--dark-red);
+}
+
+.table-custom thead th {
+  border: none;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+.table-custom tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  transition: all 0.2s ease;
+}
+
+.table-custom tbody tr:hover {
+  background: var(--light-yellow);
+}
+
+.table-custom tbody td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+}
+
+.amount-badge {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #9CA3AF;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.btn-back {
+  background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+  border: none;
+  color: var(--dark-red);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+  color: var(--dark-red);
+}
+
+.date-badge {
+  background: var(--light-yellow);
+  color: var(--dark-red);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .seller-info {
+    display: block;
+  }
+  
+  .info-item {
+    display: block;
+    margin: 0.5rem 0;
+  }
+}
+</style>
+
+<div class="detail-container">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h2><i class="bi bi-person-badge-fill"></i> Seller Details</h2>
+      <div class="seller-info">
+        <div class="info-item">
+          <strong>📞 Contact:</strong> {{ seller.contact|default:"N/A" }}
+        </div>
+        <div class="info-item">
+          <strong>✉️ Email:</strong> {{ seller.email|default:"N/A" }}
+        </div>
+      </div>
+      <a href="{% url 'pos:seller_list' %}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Back to Sellers
+      </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="seller-stats">
+      <div class="stat-card">
+        <div class="stat-label">👤 Seller Name</div>
+        <div class="stat-value" style="font-size: 1.5rem;">{{ seller.name }}</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">💰 Total Purchases</div>
+        <div class="stat-value">NPR {{ seller.total_purchases }}</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">📎 Total Payable</div>
+        <div class="stat-value">NPR {{ total_payable }}</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">✅ Total Paid</div>
+        <div class="stat-value">NPR {{ total_paid }}</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-label">📦 Total Transactions</div>
+        <div class="stat-value">{{ purchases.count }}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.25rem;">
+      <button class="btn-back" data-bs-toggle="modal" data-bs-target="#settlePayableModal">Settle Payable</button>
+    </div>
+
+    <!-- Settle Payable Modal -->
+    <div class="modal fade" id="settlePayableModal" tabindex="-1" aria-labelledby="settlePayableModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settlePayableModalLabel">Settle Payable for {{ seller.name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="settlePayableForm" method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="payableSelect" class="form-label">Select Outstanding Payable</label>
+                <select id="payableSelect" name="payable_id" class="form-select">
+                  <option value="">-- Select payable --</option>
+                  {% for p in payables %}
+                    {% if p.status == 'pending' %}
+                      {% if p.related_expense %}
+                        <option value="{{ p.id }}" data-remaining="{{ p.remaining_amount }}">Expense #{{ p.related_expense.id }} – NPR {{ p.remaining_amount }} (Unpaid)</option>
+                      {% else %}
+                        <option value="{{ p.id }}" data-remaining="{{ p.remaining_amount }}">Payable #{{ p.id }} – NPR {{ p.remaining_amount }} (Unpaid)</option>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="amountPaid" class="form-label">Amount Paid (NPR)</label>
+                <input type="number" id="amountPaid" name="amount_paid" class="form-control" step="0.01" min="0.01" disabled>
+                <div id="outstandingHint" class="form-text mt-1 text-muted"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="payMode" class="form-label">Payment Mode</label>
+                <select id="payMode" name="payment_mode" class="form-select">
+                  <option value="cash">Cash</option>
+                  <option value="qr">QR</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="payRemark" class="form-label">Remark (optional)</label>
+                <input id="payRemark" name="remark" class="form-control" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" id="settleSubmitBtn" class="btn btn-success" disabled onclick="submitSettlePayable()">Submit Payment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Purchase History -->
+    <div class="history-card">
+      <div class="card-header-custom">
+        <i class="bi bi-clock-history"></i> Purchase History
+      </div>
+      <div class="card-body-custom">
+        {% if purchases %}
+        <div class="table-responsive">
+          <table class="table table-custom">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Register</th>
+                <th>Payment Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in purchases %}
+              <tr>
+                <td>
+                  <span class="date-badge">{{ p.created_at }}</span>
+                </td>
+                <td>
+                  <span class="amount-badge">NPR {{ p.amount }}</span>
+                </td>
+                <td>{{ p.description|default:"No description" }}</td>
+                <td><strong>{{ p.register }}</strong></td>
+                <td>
+                  {% if p.payable and p.payable.status == 'pending' %}
+                    <span class="badge bg-danger">Unpaid</span>
+                  {% elif p.payable and p.payable.status == 'settled' %}
+                    <span class="badge bg-success">Paid</span>
+                  {% else %}
+                    <span class="badge bg-secondary">N/A</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">📭</div>
+          <h4>No Purchase History</h4>
+          <p>No purchases have been recorded for this seller yet.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+      <!-- Payables Table -->
+      <div class="history-card" style="margin-top:1.5rem;">
+        <div class="card-header-custom">
+          <i class="bi bi-list-check"></i> Payables
+        </div>
+        <div class="card-body-custom">
+          {% if payables %}
+          <div class="table-responsive">
+            <table class="table table-custom">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Created</th>
+                  <th>Original Amount</th>
+                  <th>Remaining</th>
+                  <th>Status</th>
+                  <th>Linked Expense</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in payables %}
+                <tr>
+                  <td>#{{ p.id }}</td>
+                  <td>{{ p.created_at }}</td>
+                  <td>NPR {{ p.amount }}</td>
+                  <td>NPR {{ p.remaining_amount }}</td>
+                  <td>{{ p.get_status_display }}</td>
+                  <td>{% if p.related_expense %}Expense #{{ p.related_expense.id }}{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">
+            <div class="empty-state-icon">🧾</div>
+            <h4>No Payables</h4>
+            <p>There are no outstanding payables for this seller.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+  </div>
+</div>
+  <script>
+  (function(){
+    const payableSelect = document.getElementById('payableSelect');
+    const amountPaid = document.getElementById('amountPaid');
+    const outstandingHint = document.getElementById('outstandingHint');
+    const submitBtn = document.getElementById('settleSubmitBtn');
+    const payMode = document.getElementById('payMode');
+    const payRemark = document.getElementById('payRemark');
+
+    function reset() {
+      amountPaid.value = '';
+      amountPaid.disabled = true;
+      submitBtn.disabled = true;
+      outstandingHint.textContent = '';
+    }
+
+    if (payableSelect) {
+      payableSelect.addEventListener('change', function(){
+        const opt = payableSelect.selectedOptions[0];
+        if (!opt || !opt.value) { reset(); return; }
+        const remaining = parseFloat(opt.dataset.remaining || '0');
+        if (isNaN(remaining)) { reset(); return; }
+        outstandingHint.textContent = 'Outstanding: NPR ' + remaining.toFixed(2);
+        amountPaid.max = remaining;
+        amountPaid.disabled = false;
+        submitBtn.disabled = false;
+        amountPaid.focus();
+      });
+    }
+
+    window.submitSettlePayable = function(){
+      const opt = payableSelect.selectedOptions[0];
+      if (!opt || !opt.value) { alert('Please select a payable to settle.'); return; }
+      const payableId = opt.value;
+      const amt = parseFloat(amountPaid.value);
+      if (isNaN(amt) || amt <= 0) { alert('Enter a valid payment amount.'); return; }
+      const max = parseFloat(amountPaid.max || '0');
+      if (amt > max) { alert('Amount cannot exceed outstanding.'); return; }
+
+      const data = new FormData();
+      data.append('payable_id', payableId);
+      data.append('amount_paid', amt);
+      data.append('payment_mode', payMode.value);
+      data.append('remark', payRemark.value || '');
+
+      const csrftokenEl = document.querySelector('[name=csrfmiddlewaretoken]');
+      const csrftoken = csrftokenEl ? csrftokenEl.value : '';
+
+      fetch(`{% url 'pos:seller_pay' seller.id %}`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: data,
+      }).then(res => res.json()).then(json => {
+        if (json.success) {
+          // if fully settled, remove option
+          if (json.settled) {
+            opt.remove();
+          } else if (json.remaining_amount !== undefined) {
+            opt.dataset.remaining = json.remaining_amount;
+          }
+          outstandingHint.textContent = 'Payment recorded. Remaining: NPR ' + (json.remaining_amount || 0).toFixed(2);
+          amountPaid.value = '';
+          amountPaid.disabled = true;
+          submitBtn.disabled = true;
+        } else {
+          alert(json.error || 'Failed to record payment.');
+        }
+      }).catch(err => {
+        console.error(err);
+        alert('Request failed, see console for details.');
+      });
+    };
+  })();
+  </script>
+  {% endblock %}

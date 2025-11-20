@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Explore Zorpido's blog for delicious recipes, cooking tips, and the latest news from our kitchen. Stay inspired with stories and insights from food enthusiasts.">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'blog_list/css/style.css' %}">
+
+<section class="blog-hero">
+    <div class="container">
+        <div class="blog-hero-content">
+            <div class="blog-hero-icon">
+                <i class="bi bi-journal-text"></i>
+            </div>
+            <h1 class="blog-hero-title">Our Blog</h1>
+            <p class="blog-hero-subtitle">Stories, recipes, and insights from the Zorpido kitchen</p>
+        </div>
+    </div>
+</section>
+
+<section class="blog-section">
+    <div class="container">
+        {% if posts %}
+        <div class="row g-4">
+            {% for post in posts %}
+            <div class="col-lg-4 col-md-6">
+                <div class="blog-card">
+                    <div class="blog-image-wrapper">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" class="blog-image" alt="{{ post.title }}">
+                        {% else %}
+                        <div class="blog-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% endif %}
+                        <div class="blog-date-badge">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            {{ post.published_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">{{ post.title }}</h3>
+                        <p class="blog-excerpt">{{ post.excerpt }}</p>
+                        <a href="{% url 'website:blog_detail' post.slug %}" class="btn-read-more">
+                            Read More
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-journal-x"></i>
+            </div>
+            <h3>No Blog Posts Yet</h3>
+            <p class="text-muted">Check back soon for exciting stories and updates!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

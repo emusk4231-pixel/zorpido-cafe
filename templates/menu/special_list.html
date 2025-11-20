@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ category.name }} | Zorpido{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'menu_list/css/style.css' %}">
+
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">{{ category.name }}</h1>
+    <span class="text-muted">This section is age-restricted</span>
+  </div>
+
+  <div class="row g-4 menu-items-grid">
+    {% for item in items %}
+    {% if item.is_active %}
+    <div class="col-lg-4 col-md-6">
+      <div class="menu-card-enhanced">
+        <div class="card-image-container">
+          {% if item.image %}
+          <img src="{{ item.image.url }}" class="menu-image" alt="{{ item.name }}">
+          {% else %}
+          <div class="menu-placeholder">
+            <i class="bi bi-image-fill"></i>
+            <span>No Image</span>
+          </div>
+          {% endif %}
+
+          <div class="image-overlay"></div>
+
+          {% if not item.is_in_stock %}
+          <div class="stock-overlay">
+            <div class="stock-badge">
+              <i class="bi bi-x-circle-fill me-2"></i>
+              Out of Stock
+            </div>
+          </div>
+          {% endif %}
+                      <button 
+              class="quick-view-enhanced"
+              data-bs-toggle="modal"
+              data-bs-target="#dishModal"
+              data-name="{{ item.name }}"
+              data-category="{{ category.name }}"
+              data-price="{{ item.price }}"
+              data-description="{{ item.description }}"
+              data-image="{% if item.image %}{{ item.image.url }}{% endif %}"
+              data-vegetarian="{{ item.is_vegetarian }}"
+              data-spicy="{{ item.is_spicy }}"
+              data-instock="{{ item.is_in_stock }}"
+              data-time="{{ item.preparation_time }}">
+              <i class="bi bi-eye-fill"></i>
+              <span>Quick View</span>
+            </button>
+
+        </div>
+
+        <div class="card-content">
+          <div class="content-header">
+            <h3 class="dish-name">{{ item.name }}</h3>
+            <div class="price-box">
+              <span class="price">{{ item.price }}</span>
+            </div>
+          </div>
+          <p class="dish-description">{{ item.description|truncatewords:15 }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <!-- ========================
+ Dish Details Modal
+================================ -->
+<div class="modal fade" id="dishModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-enhanced">
+      <button type="button" class="modal-close-enhanced" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      
+      <div class="modal-body p-0">
+        <div class="row g-0">
+          <div class="col-md-5 modal-image-col">
+            <div class="modal-image-box">
+              <img id="modalDishImage" src="" alt="Dish" class="modal-img">
+              <div class="modal-img-gradient"></div>
+            </div>
+          </div>
+          
+          <div class="col-md-7 modal-content-col">
+            <div class="modal-inner-content">
+              <span class="modal-category-tag">
+                <i class="bi bi-tag-fill me-1"></i>
+                <span id="modalDishCategory"></span>
+              </span>
+              
+              <h2 id="modalDishName" class="modal-dish-name"></h2>
+              
+              <div class="modal-price-section">
+                <div class="price-display">
+                  <span class="price-label">Price</span>
+                  <div class="price-amount">
+                    <span class="curr">NPR</span>
+                    <span id="modalDishPrice" class="amt"></span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="modal-badges-row">
+                <span id="modalDishVegetarian" class="modal-tag veg-tag d-none">
+                  <i class="bi bi-circle-fill"></i> Vegetarian
+                </span>
+                <span id="modalDishSpicy" class="modal-tag spicy-tag d-none">
+                  <i class="bi bi-fire"></i> Spicy
+                </span>
+                <span id="modalDishAvailable" class="modal-tag unavailable-tag d-none">
+                  <i class="bi bi-x-circle"></i> Out of Stock
+                </span>
+              </div>
+              
+              <div class="modal-prep-time">
+                <i class="bi bi-alarm"></i>
+                <span class="prep-label">Preparation Time:</span>
+                <span id="modalDishPrepTime" class="prep-value"></span>
+              </div>
+              
+              <div class="modal-separator"></div>
+              
+              <div class="modal-description-section">
+                <h6 class="desc-heading">About This Dish</h6>
+                <p id="modalDishDescription" class="desc-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const quickViewButtons = document.querySelectorAll(".quick-view-enhanced");
+
+  quickViewButtons.forEach(button => {
+    button.addEventListener("click", () => {
+
+      // Read data attributes
+      const name = button.dataset.name;
+      const category = button.dataset.category;
+      const price = button.dataset.price;
+      const description = button.dataset.description;
+      const image = button.dataset.image;
+      const vegetarian = button.dataset.vegetarian === "True";
+      const spicy = button.dataset.spicy === "True";
+      const instock = button.dataset.instock === "True";
+      const time = button.dataset.time;
+
+      // Assign values to modal
+      document.getElementById("modalDishName").textContent = name;
+      document.getElementById("modalDishCategory").textContent = category;
+      document.getElementById("modalDishPrice").textContent = price;
+      document.getElementById("modalDishDescription").textContent = description;
+      document.getElementById("modalDishPrepTime").textContent = time + " mins";
+
+      // ✅ Fix Image Load
+      const imgElement = document.getElementById("modalDishImage");
+      if (image && image.trim() !== "") {
+        imgElement.src = image;
+      } else {
+        imgElement.src = "{% static 'menu_list/images/no-image.png' %}";
+      }
+
+      // Show tags
+      document.getElementById("modalDishVegetarian").classList.toggle("d-none", !vegetarian);
+      document.getElementById("modalDishSpicy").classList.toggle("d-none", !spicy);
+      document.getElementById("modalDishAvailable").classList.toggle("d-none", instock);
+    });
+  });
+});
+</script>
+
+{% endblock content %}
