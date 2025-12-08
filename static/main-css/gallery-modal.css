@@ -1,0 +1,179 @@
+/*
+  gallery-modal.css
+  - Styles for the simplified, modern, cafe-themed gallery modal and gallery grid tweaks.
+  - Comments explain purpose of each rule.
+*/
+
+/* Base variables to give a warm, cafe-like tone */
+:root{
+  --cafe-bg: #fffaf6; /* soft cream */
+  --accent: #b44b2a; /* coffee brown */
+  --muted: #6b6b6b;
+  --glass: rgba(255,255,255,0.6);
+}
+
+/* Gallery grid improvements: spacing, alignment and hover */
+.gallery-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem; /* breathing space between items */
+  align-items: stretch;
+  margin: 0 auto;
+}
+
+.gallery-card{
+  background: transparent; /* remove card-like backgrounds */
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease;
+  display:flex; /* ensure equal height items */
+}
+
+/* image container provides consistent aspect ratio and cropping */
+.image-container{
+  width:100%;
+  aspect-ratio: 4 / 3; /* pleasant photo ratio */
+  position: relative;
+  display:block;
+}
+
+.gallery-image{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover; /* crop to fill card nicely */
+  transition: transform .5s ease, filter .28s ease;
+  border-radius: 8px;
+}
+
+/* Hover: gentle lift + warm tint */
+.gallery-card:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(30,30,30,0.12);
+}
+.gallery-card:hover .gallery-image{
+  transform: scale(1.04);
+  filter: saturate(1.05) contrast(1.02);
+}
+
+/* Remove visual clutter overlays in the grid (keep subtle corners) */
+.image-overlay, .overlay-content, .corner-badge, .shine-effect{
+  display: none !important;
+}
+
+/* CTA button tweak to match cafe accent */
+.btn-view-gallery{
+  --bs-btn-padding-y: .6rem;
+  --bs-btn-padding-x: 1.2rem;
+  background: linear-gradient(90deg, var(--accent), #8f3f23);
+  color: #fff;
+  border-radius: 999px;
+  padding: .6rem 1.1rem;
+  display: inline-flex;
+  gap: .6rem;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(180,75,42,0.12);
+}
+
+/* -------- Modal: minimal & centered -------- */
+.zorpido-gallery-modal .modal-dialog{
+  max-width: 1100px;
+  margin: 1.75rem auto;
+}
+
+/* Remove default bootstrap modal padding and borders, make background soft */
+.zorpido-gallery-modal .modal-content{
+  background: transparent; /* transparent so we can style inner container */
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+/* inner viewer card that appears centered */
+.zorpido-gallery-modal .viewer{
+  background:linear-gradient(180deg, rgba(99, 1, 1, 0.364), rgba(73, 67, 1, 0.424));
+  border-radius: 12px;
+  padding: 0.6rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 30px 60px rgba(20,20,20,0.12);
+  transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .28s ease;
+  will-change: transform, opacity;
+}
+
+/* Close button positioned top-right, minimal */
+.zorpido-gallery-modal .modal-close-btn{
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 999px;
+  width: 38px;
+  height: 38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: var(--muted);
+  box-shadow: 0 6px 18px rgba(20,20,20,0.08);
+  z-index: 50;
+}
+
+/* The image itself: no border, centered, and sized responsively */
+.zorpido-gallery-modal .modal-image{
+  max-width: 100%;
+  max-height: calc(90vh - 40px);
+  object-fit: contain; /* show full image without cropping */
+  border-radius: 8px;
+  display:block;
+}
+
+/* nav arrows: subtle, only appear on larger screens */
+.zorpido-gallery-modal .nav-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background: rgba(255,255,255,0.9);
+  border-radius: 999px;
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  border:none;color:var(--muted);
+  box-shadow: 0 6px 18px rgba(10,10,10,0.06);
+  transition: transform .18s ease, opacity .18s ease;
+}
+.zorpido-gallery-modal .nav-prev{ left: 12px; }
+.zorpido-gallery-modal .nav-next{ right: 12px; }
+@media (max-width:768px){
+  .zorpido-gallery-modal .nav-arrow{ display:none; }
+}
+
+/* Fade animations: tie to bootstrap .fade but smoother */
+.zorpido-gallery-modal.fade .modal-dialog{
+  transform: translateY(8vh) scale(.99);
+  opacity: 0;
+}
+.zorpido-gallery-modal.show .modal-dialog{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition: transform .36s cubic-bezier(.2,.9,.2,1), opacity .36s ease;
+}
+
+/* Backdrop tweak: softer, slightly warm */
+.modal-backdrop.show{
+  background-color: rgba(20,14,10,0.45);
+}
+
+/* Accessibility: focus outline for close button */
+.zorpido-gallery-modal .modal-close-btn:focus{
+  outline: 2px solid rgba(180,75,42,0.18);
+  outline-offset: 2px;
+}
+
+/* Small screens: tighter modal width */
+@media (max-width:992px){
+  .zorpido-gallery-modal .modal-dialog{ max-width: 720px; }
+}
+
+/* Ensure thumbnails nav removed if present by other CSS */
+.thumbnail-nav, .share-menu, .modal-footer-custom, .modal-header-custom, .modal-counter, .modal-title-custom{ display:none !important; }

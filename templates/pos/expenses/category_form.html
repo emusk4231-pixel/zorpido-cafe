@@ -1,0 +1,699 @@
+{% extends 'base.html' %}
+{% block title %}{% if category %}Edit Category{% else %}Add Category{% endif %} | Zorpido{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --zorpido-red: #dc2626;
+        --zorpido-red-hover: #b91c1c;
+        --zorpido-red-light: #fee2e2;
+        --zorpido-yellow: #fbbf24;
+        --zorpido-yellow-light: #fef3c7;
+        --zorpido-yellow-dark: #f59e0b;
+        --zorpido-white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-900: #111827;
+    }
+
+    .category-form-container {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb-nav-cat {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--gray-600);
+    }
+
+    .breadcrumb-nav-cat a {
+        color: var(--zorpido-red);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .breadcrumb-nav-cat a:hover {
+        color: var(--zorpido-red-hover);
+        text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+        color: var(--gray-300);
+    }
+
+    /* Page Header */
+    .category-form-header {
+        margin-bottom: 2rem;
+    }
+
+    .category-form-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .category-icon-header {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--zorpido-yellow), var(--zorpido-yellow-dark));
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    .category-form-title h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    .category-form-subtitle {
+        color: var(--gray-600);
+        font-size: 0.9375rem;
+        margin-left: 4.5rem;
+    }
+
+    /* Form Card */
+    .category-form-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border-top: 5px solid var(--zorpido-yellow);
+    }
+
+    .category-form-body {
+        padding: 2.5rem;
+    }
+
+    /* Delete Confirmation */
+    .delete-confirmation-cat {
+        background: linear-gradient(135deg, var(--zorpido-red-light), white);
+        padding: 2.5rem;
+        text-align: center;
+    }
+
+    .delete-icon-cat {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+    }
+
+    .delete-title-cat {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--zorpido-red);
+        margin-bottom: 1rem;
+    }
+
+    .delete-message-cat {
+        color: var(--gray-700);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .delete-category-name {
+        display: inline-block;
+        background: var(--zorpido-yellow-light);
+        color: var(--zorpido-red);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.125rem;
+        margin: 1rem 0 1.5rem;
+        border: 2px solid var(--zorpido-yellow);
+    }
+
+    .delete-warning {
+        background: white;
+        border-left: 4px solid var(--zorpido-red);
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        text-align: left;
+    }
+
+    .delete-warning strong {
+        color: var(--zorpido-red);
+    }
+
+    /* Category Form */
+    .category-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+    }
+
+    .form-group-cat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+    }
+
+    .form-group-cat label {
+        font-weight: 600;
+        color: var(--gray-700);
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .label-icon {
+        font-size: 1.25rem;
+    }
+
+    .required-star {
+        color: var(--zorpido-red);
+        font-weight: 700;
+    }
+
+    .form-group-cat input,
+    .form-group-cat select,
+    .form-group-cat textarea {
+        padding: 0.875rem 1.125rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: var(--gray-50);
+        font-family: inherit;
+    }
+
+    .form-group-cat input:focus,
+    .form-group-cat select:focus,
+    .form-group-cat textarea:focus {
+        outline: none;
+        border-color: var(--zorpido-yellow);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.15);
+    }
+
+    .form-group-cat textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-help {
+        font-size: 0.8125rem;
+        color: var(--gray-600);
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    /* Emoji Picker Suggestion */
+    .emoji-suggestions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .emoji-option {
+        width: 40px;
+        height: 40px;
+        background: var(--zorpido-yellow-light);
+        border: 2px solid var(--zorpido-yellow);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .emoji-option:hover {
+        transform: scale(1.1);
+        background: var(--zorpido-yellow);
+        box-shadow: 0 4px 8px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Error Messages */
+    .form-errors-cat {
+        background: var(--zorpido-red-light);
+        border-left: 4px solid var(--zorpido-red);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-errors-cat ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        color: var(--zorpido-red);
+        font-size: 0.875rem;
+    }
+
+    /* Form Actions */
+    .form-actions-cat {
+        display: flex;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--gray-100);
+        margin-top: 1rem;
+    }
+
+    .btn-cat {
+        padding: 0.875rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        flex: 1;
+    }
+
+    .btn-primary-cat {
+        background: linear-gradient(135deg, var(--zorpido-yellow), var(--zorpido-yellow-dark));
+        color: var(--gray-900);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    .btn-primary-cat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
+    }
+
+    .btn-secondary-cat {
+        background: white;
+        color: var(--gray-700);
+        border: 2px solid var(--gray-300);
+    }
+
+    .btn-secondary-cat:hover {
+        background: var(--gray-50);
+        border-color: var(--gray-400);
+    }
+
+    .btn-danger-cat {
+        background: var(--zorpido-red);
+        color: white;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-danger-cat:hover {
+        background: var(--zorpido-red-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.5);
+    }
+
+    /* Loading State */
+    .btn-loading-cat {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn-loading-cat::after {
+        content: "";
+        position: absolute;
+        right: 1rem;
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Category Preview */
+    .category-preview {
+        background: linear-gradient(135deg, var(--zorpido-yellow-light), white);
+        border: 2px solid var(--zorpido-yellow);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .preview-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .preview-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 20px;
+        font-weight: 600;
+        color: var(--gray-900);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .category-form-container {
+            padding: 0 1rem;
+            margin: 1rem auto;
+        }
+
+        .category-form-body,
+        .delete-confirmation-cat {
+            padding: 1.5rem;
+        }
+
+        .category-form-title h1 {
+            font-size: 1.5rem;
+        }
+
+        .category-icon-header {
+            width: 48px;
+            height: 48px;
+            font-size: 1.5rem;
+        }
+
+        .category-form-subtitle {
+            margin-left: 4rem;
+            font-size: 0.875rem;
+        }
+
+        .form-actions-cat {
+            flex-direction: column;
+        }
+
+        .btn-cat {
+            width: 100%;
+        }
+    }
+
+    /* Animation */
+    .fade-in {
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-form-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav-cat">
+        <a href="{% url 'pos:expenses_by_category' %}">📊 Categories</a>
+        <span class="breadcrumb-separator">›</span>
+        <span>{% if category %}Edit Category{% else %}Add New Category{% endif %}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="category-form-header">
+        <div class="category-form-title">
+            <div class="category-icon-header">
+                {% if category %}✏️{% else %}🏷️{% endif %}
+            </div>
+            <h1>{% if category %}Edit Category{% else %}Add New Category{% endif %}</h1>
+        </div>
+        <p class="category-form-subtitle">
+            {% if category %}
+            Modify your expense category details
+            {% else %}
+            Create a new category to organize your expenses
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="category-form-card fade-in">
+        {% if confirm_delete %}
+        <!-- Delete Confirmation -->
+        <div class="delete-confirmation-cat">
+            <div class="delete-icon-cat">🗑️</div>
+            <h2 class="delete-title-cat">Confirm Category Deletion</h2>
+            <p class="delete-message-cat">
+                Are you sure you want to delete this category?
+            </p>
+            <div class="delete-category-name">{{ category.name }}</div>
+
+            <div class="delete-warning">
+                <strong>⚠️ Warning:</strong> Deleting this category may affect existing expenses associated with it.
+                This action cannot be undone.
+            </div>
+
+            <form method="post" id="deleteCategoryForm">
+                {% csrf_token %}
+                <div class="form-actions-cat" style="border: none; padding-top: 0;">
+                    <button type="submit" class="btn-cat btn-danger-cat">
+                        🗑️ Yes, Delete Category
+                    </button>
+                    <a href="{% url 'pos:expense_category_list' %}" class="btn-cat btn-secondary-cat">
+                        ← Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <!-- Form -->
+        <div class="category-form-body">
+            {% if form.errors %}
+            <div class="form-errors-cat">
+                <strong>⚠️ Please correct the following errors:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <li>{{ field|title }}: {{ error }}</li>
+                    {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" class="category-form" id="categoryForm">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group-cat">
+                    <label for="{{ field.id_for_label }}">
+                        <span class="label-icon">
+                            {% if 'name' in field.name %}📝
+                            {% elif 'description' in field.name %}📄
+                            {% elif 'icon' in field.name %}😀
+                            {% else %}🏷️
+                            {% endif %}
+                        </span>
+                        {{ field.label }}
+                        {% if field.field.required %}
+                        <span class="required-star">*</span>
+                        {% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="form-help">
+                        💡 {{ field.help_text }}
+                    </span>
+                    {% endif %}
+                    {% if field.errors %}
+                    <span class="form-help" style="color: var(--zorpido-red); font-style: normal;">
+                        ❌ {{ field.errors.0 }}
+                    </span>
+                    {% endif %}
+
+                    <!-- Emoji Suggestions for name field -->
+                    {% if 'name' in field.name %}
+                    <div class="emoji-suggestions">
+                        <div class="emoji-option" onclick="addEmoji('🍔', '{{ field.id_for_label }}')" title="Food">🍔
+                        </div>
+                        <div class="emoji-option" onclick="addEmoji('🚗', '{{ field.id_for_label }}')"
+                            title="Transport">🚗</div>
+                        <div class="emoji-option" onclick="addEmoji('🏠', '{{ field.id_for_label }}')" title="Rent">🏠
+                        </div>
+                        <div class="emoji-option" onclick="addEmoji('💡', '{{ field.id_for_label }}')"
+                            title="Utilities">💡</div>
+                        <div class="emoji-option" onclick="addEmoji('🎬', '{{ field.id_for_label }}')"
+                            title="Entertainment">🎬</div>
+                        <div class="emoji-option" onclick="addEmoji('⚕️', '{{ field.id_for_label }}')" title="Health">⚕️
+                        </div>
+                        <div class="emoji-option" onclick="addEmoji('📚', '{{ field.id_for_label }}')"
+                            title="Education">📚</div>
+                        <div class="emoji-option" onclick="addEmoji('🛒', '{{ field.id_for_label }}')" title="Shopping">
+                            🛒</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <!-- Live Preview -->
+                <div class="category-preview" id="categoryPreview">
+                    <div class="preview-title">Preview</div>
+                    <div class="preview-badge">
+                        <span id="previewEmoji">🏷️</span>
+                        <span id="previewName">Category Name</span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions-cat">
+                    <button type="submit" class="btn-cat btn-primary-cat" id="submitBtn">
+                        <span>💾</span>
+                        <span>{% if category %}Update Category{% else %}Create Category{% endif %}</span>
+                    </button>
+                    <a href="{% url 'pos:expense_category_list' %}" class="btn-cat btn-secondary-cat">
+                        <span>✖️</span>
+                        <span>Cancel</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Add emoji to input field
+    function addEmoji(emoji, fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            const currentValue = field.value;
+            // Check if emoji already exists at start
+            const emojiRegex = /^[\u{1F000}-\u{1F9FF}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+
+            if (emojiRegex.test(currentValue)) {
+                // Replace existing emoji
+                field.value = emoji + ' ' + currentValue.substring(2).trim();
+            } else {
+                // Add emoji at start
+                field.value = emoji + ' ' + currentValue.trim();
+            }
+
+            field.focus();
+            updatePreview();
+        }
+    }
+
+    // Update live preview
+    function updatePreview() {
+        const nameField = document.querySelector('input[name*="name"]');
+        const previewEmoji = document.getElementById('previewEmoji');
+        const previewName = document.getElementById('previewName');
+
+        if (nameField && previewName) {
+            const value = nameField.value.trim();
+
+            // Extract emoji if present
+            const emojiRegex = /^([\u{1F000}-\u{1F9FF}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}])/u;
+            const match = value.match(emojiRegex);
+
+            if (match) {
+                previewEmoji.textContent = match[1];
+                previewName.textContent = value.substring(match[1].length).trim() || 'Category Name';
+            } else {
+                previewEmoji.textContent = '🏷️';
+                previewName.textContent = value || 'Category Name';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('categoryForm');
+        const deleteForm = document.getElementById('deleteCategoryForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Form submission with loading state
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (submitBtn) {
+                    submitBtn.classList.add('btn-loading-cat');
+                    submitBtn.disabled = true;
+                }
+            });
+
+            // Listen for input changes to update preview
+            const nameField = document.querySelector('input[name*="name"]');
+            if (nameField) {
+                nameField.addEventListener('input', updatePreview);
+                // Initial preview update
+                updatePreview();
+            }
+
+            // Animate form groups
+            const formGroups = document.querySelectorAll('.form-group-cat');
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    group.style.transition = 'all 0.4s ease';
+                    group.style.opacity = '1';
+                    group.style.transform = 'translateY(0)';
+                }, index * 80);
+            });
+
+            // Auto-focus first input
+            const firstInput = form.querySelector('input:not([type="hidden"]), select, textarea');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 300);
+            }
+        }
+
+        // Delete form handling
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function (e) {
+                const btn = this.querySelector('button[type="submit"]');
+                if (btn) {
+                    btn.classList.add('btn-loading-cat');
+                    btn.disabled = true;
+                    btn.innerHTML = '🗑️ Deleting...';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

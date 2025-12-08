@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About us | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description"
+    content="know more about Zorpido - our story, mission, values, and what makes us different in the fast food industry. Discover our commitment to quality, freshness, and customer satisfaction.">
+{% endblock %}
+
+
+{% block content %}
+<!-- gallery CSS -->
+<link rel="stylesheet" href="{% static 'about/css/style.css' %}">
+
+
+    <div class="about-us-hero">
+        <h1>About Zorpido 🍔</h1>
+        <p>Your cozy corner for quick bites, bold flavors, and unforgettable moments</p>
+    </div>
+
+    <div class="about-us-container">
+        <div class="about-us-section">
+            <h2>Our Story</h2>
+            <p>Zorpido began as a small passion project, inspired by the love for fresh ingredients, quick service, and unique flavors that make fast food feel fun again. From our very first day, our goal has been to serve food that's fast, but never "fast" in quality.</p>
+            <p style="margin-top: 20px;">We started with a simple dream: to serve delicious food that brings people together, whether you're rushing between classes, taking a break from work, or just craving something yummy!</p>
+        </div>
+
+        <div class="about-us-section">
+            <h2>What Makes Us Different</h2>
+            <div class="about-us-features">
+                <div class="about-us-feature-card">
+                    <span class="icon">🍔</span>
+                    <h3>Fresh Ingredients Daily</h3>
+                    <p>No shortcuts – only the best for you</p>
+                </div>
+                <div class="about-us-feature-card">
+                    <span class="icon">🔥</span>
+                    <h3>Fast Service</h3>
+                    <p>Your order, hot and ready in minutes</p>
+                </div>
+                <div class="about-us-feature-card">
+                    <span class="icon">🧡</span>
+                    <h3>Cozy Vibe</h3>
+                    <p>Friendly service that feels like home</p>
+                </div>
+                <div class="about-us-feature-card">
+                    <span class="icon">🥤</span>
+                    <h3>Creative Menu</h3>
+                    <p>Classic favorites with a Zorpido twist</p>
+                </div>
+                <div class="about-us-feature-card">
+                    <span class="icon">✨</span>
+                    <h3>Clean & Hygienic</h3>
+                    <p>Always transparent, always fresh</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-us-section">
+            <h2>Our Mission</h2>
+            <p>To deliver quality fast food at affordable prices, served with warmth, speed, and consistency. We want every bite to make your day a little better.</p>
+        </div>
+
+        <div class="about-us-section">
+            <h2>Our Values</h2>
+            <div class="about-us-values-list">
+                <div class="about-us-value-item">⭐ Quality First</div>
+                <div class="about-us-value-item">😊 Customer Happiness</div>
+                <div class="about-us-value-item">🧼 Clean & Fresh Cooking</div>
+                <div class="about-us-value-item">💡 Innovation in Every Bite</div>
+                <div class="about-us-value-item">🤝 Respect & Hospitality</div>
+            </div>
+        </div>
+
+        <div class="about-us-section">
+            <h2>Our Promise to You</h2>
+            <p style="margin-bottom: 30px;">Every time you visit, you can expect:</p>
+            <div class="about-us-promise-grid">
+                <div class="about-us-promise-item">Freshly prepared meals</div>
+                <div class="about-us-promise-item">Fast and friendly service</div>
+                <div class="about-us-promise-item">A clean and comfortable dining experience</div>
+                <div class="about-us-promise-item">Affordable pricing with great value</div>
+            </div>
+        </div>
+
+        <div class="about-us-section">
+            <h2>Our Vision</h2>
+            <p>We're growing fast and aim to bring Zorpido flavors to many more neighborhoods through dine-in, takeaway, and cloud kitchen concepts. We're building a brand that customers trust, love, and recommend.</p>
+        </div>
+
+        <div class="about-us-cta-section">
+            <h2>Thank You for Being Part of the Zorpido Family! ❤️</h2>
+            <p>Your support inspires us to cook better, serve faster, and dream bigger. Come for the food, stay for the experience.</p>
+        </div>
+    </div>
+
+<!-- gallery JS -->
+<script src="{% static 'about/js/scripts.js' %}"></script>
+{% endblock %}

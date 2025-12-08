@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Order {{ order.order_number }} | Zorpido{% endblock %}
+{% block meta_description %}
+<!-- Meta Description -->
+<meta name="description" content="View detailed information for Order #{{ order.order_number }} at Zorpido. Check customer details, order items, and add more items to the order seamlessly.">
+{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'orders_details_pos/css/style.css' %}">
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="order-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h2><i class="bi bi-receipt me-2"></i>Order Details</h2>
+                    <div class="order-number-badge">
+                        <strong>{{ order.order_number }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                        {% if order.status != 'completed' %}
+                        <button id="completeOrderBtn" class="action-btn success">
+                            <i class="bi bi-check-circle"></i>Complete Order
+                        </button>
+                        {% endif %}
+                        <a href="{% url 'pos:dashboard' %}" class="action-btn">
+                            <i class="bi bi-arrow-left"></i>Back to POS
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Order Information -->
+        <div class="col-lg-6 mb-4">
+            <!-- Customer Info -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <h5><i class="bi bi-person-circle"></i>Customer Information</h5>
+                </div>
+                <div class="detail-card-body">
+                    <div class="info-item customer">
+                        <i class="bi bi-person-fill"></i>
+                        <div class="info-item-content">
+                            <div class="info-item-label">Customer Name</div>
+                            <div class="info-item-value">
+                                {% if order.customer %}
+                                    {{ order.customer.full_name }}
+                                {% else %}
+                                    <em class="text-muted">Walk-in Customer</em>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-item type">
+                        <i class="bi bi-tag-fill"></i>
+                        <div class="info-item-content">
+                            <div class="info-item-label">Order Type</div>
+                            <div class="info-item-value">{{ order.get_order_type_display }}</div>
+                        </div>
+                    </div>
+                    <div class="info-item status">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div class="info-item-content">
+                            <div class="info-item-label">Status</div>
+                            <div class="info-item-value">
+                                <span class="status-badge bg-warning text-dark">{{ order.status|title }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <h5><i class="bi bi-cart-check"></i>Order Items</h5>
+                </div>
+                <div class="detail-card-body">
+                    {% if order.items.all %}
+                    <ul class="order-items-list">
+                        {% for item in order.items.all %}
+                        <li class="order-item">
+                            <div class="order-item-info">
+                                <div class="order-item-name">{{ item.menu_item.name }}</div>
+                                <div class="order-item-qty">
+                                    <i class="bi bi-x"></i> Quantity: <strong>{{ item.quantity }}</strong>
+                                </div>
+                            </div>
+                            <div class="order-item-price">
+                                <div class="order-item-subtotal">NPR {{ item.sub_total }}</div>
+                                <small class="text-muted">@ NPR {{ item.menu_item.price }}</small>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="order-total-section">
+                        <div class="total-row">
+                            <span>Total Amount:</span>
+                            <span>NPR {{ order.total }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-items">
+                        <i class="bi bi-inbox"></i>
+                        <p>No items in this order.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Items Section -->
+        <div class="col-lg-6">
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <h5><i class="bi bi-plus-circle"></i>Add Items to Order</h5>
+                </div>
+                <div class="detail-card-body">
+                    <div class="menu-items-grid">
+                        {% for m in menu_items %}
+                        <div class="menu-item-card">
+                            <div class="menu-item-info">
+                                <div class="menu-item-name">{{ m.name }}</div>
+                                <div class="menu-item-price">NPR {{ m.price }}</div>
+                            </div>
+                            <button class="btn btn-add-item add-item-btn" data-item-id="{{ m.id }}">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add item handler
+document.querySelectorAll('.add-item-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+        const itemId = this.dataset.itemId;
+        
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        
+        fetch('{% url "pos:add_item" order.id %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ item_id: itemId, quantity: 1 })
+        }).then(r => r.json()).then(data => {
+            if(data.success){
+                location.reload();
+            } else {
+                alert(data.error || 'Failed to add item');
+                this.disabled = false;
+                this.innerHTML = '<i class="bi bi-plus-lg"></i> Add';
+            }
+        }).catch(err => {
+            console.error(err);
+            alert('Failed to add item');
+            this.disabled = false;
+            this.innerHTML = '<i class="bi bi-plus-lg"></i> Add';
+        });
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Complete order button handler
+document.addEventListener('DOMContentLoaded', function(){
+    var completeBtn = document.getElementById('completeOrderBtn');
+    if(completeBtn){
+        completeBtn.addEventListener('click', function(){
+            // Redirect to payment page
+            window.location.href = `/pos/order/{{ order.id }}/payment/`;
+        });
+    }
+});
+</script>
+{% endblock %}

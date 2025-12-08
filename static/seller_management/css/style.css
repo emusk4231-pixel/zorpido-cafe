@@ -1,0 +1,163 @@
+:root {
+  --primary-red: #DC2626;
+  --secondary-red: #EF4444;
+  --accent-yellow: #FBBF24;
+  --light-yellow: #FEF3C7;
+  --dark-red: #991B1B;
+}
+
+.seller-container {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.btn-add-seller {
+  background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+  border: none;
+  color: var(--dark-red);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-add-seller:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+  color: var(--dark-red);
+}
+
+.seller-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.card-header-custom {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: none;
+}
+
+.card-body-custom {
+  padding: 1.5rem;
+}
+
+.table-custom {
+  margin: 0;
+}
+
+.table-custom thead {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+  color: var(--dark-red);
+}
+
+.table-custom thead th {
+  border: none;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+.table-custom tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  transition: all 0.2s ease;
+}
+
+.table-custom tbody tr:hover {
+  background: var(--light-yellow);
+  transform: scale(1.01);
+}
+
+.table-custom tbody td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+}
+
+.btn-action {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+  border: none;
+}
+
+.btn-view {
+  background: white;
+  border: 2px solid var(--accent-yellow);
+  color: var(--primary-red);
+}
+
+.btn-view:hover {
+  background: var(--light-yellow);
+  border-color: var(--primary-red);
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+}
+
+.btn-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #9CA3AF;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.total-badge {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+}

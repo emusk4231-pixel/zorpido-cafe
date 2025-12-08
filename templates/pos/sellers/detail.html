@@ -1,0 +1,844 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Seller Details | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description"
+  content="View and manage details for each seller in the Zorpido POS system. Access sales history, contact information, and performance metrics.">
+{% endblock %}
+{% block content %}
+<style>
+  :root {
+    --primary-red: #DC2626;
+    --secondary-red: #EF4444;
+    --accent-yellow: #FBBF24;
+    --light-yellow: #FEF3C7;
+    --dark-red: #991B1B;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .detail-container {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FEFCE8 50%, #FFFFFF 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+
+  .page-header {
+    background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(30%, -30%);
+  }
+
+  .page-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .seller-info {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .info-item {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .info-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .seller-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-red), var(--accent-yellow));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent-yellow);
+  }
+
+  .stat-label {
+    color: #6B7280;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+  }
+
+  .stat-value {
+    color: var(--dark-red);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .history-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .history-card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-header-custom {
+    background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+    color: white;
+    padding: 1.5rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .card-body-custom {
+    padding: 0;
+  }
+
+  .table-custom {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table-custom thead {
+    background: linear-gradient(135deg, var(--light-yellow), var(--accent-yellow));
+    color: var(--dark-red);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .table-custom thead th {
+    border: none;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .table-custom tbody tr {
+    border-bottom: 1px solid #F3F4F6;
+    transition: all 0.2s ease;
+  }
+
+  .table-custom tbody tr:hover {
+    background: linear-gradient(90deg, var(--light-yellow), rgba(254, 243, 199, 0.3));
+    transform: scale(1.01);
+  }
+
+  .table-custom tbody td {
+    padding: 1.25rem 1.5rem;
+    vertical-align: middle;
+    color: #374151;
+  }
+
+  .amount-badge {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+
+  .date-badge {
+    background: linear-gradient(135deg, var(--light-yellow), #FDE68A);
+    color: var(--dark-red);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    border: 1px solid var(--accent-yellow);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #9CA3AF;
+  }
+
+  .empty-state-icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.4;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .empty-state h4 {
+    color: #6B7280;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-back {
+    background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+    border: none;
+    color: var(--dark-red);
+    padding: 0.875rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-back:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+    color: var(--dark-red);
+    background: linear-gradient(135deg, #FCD34D, var(--accent-yellow));
+  }
+
+  .btn-back:active {
+    transform: translateY(-1px);
+  }
+
+  .btn-settle {
+    background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+    border: none;
+    color: white;
+    padding: 0.875rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  }
+
+  .btn-settle:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+    background: linear-gradient(135deg, var(--secondary-red), var(--primary-red));
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Modal Enhancements */
+  .modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+  }
+
+  .modal-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--dark-red);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .form-control,
+  .form-select {
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+  }
+
+  .form-text {
+    color: #6B7280;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .modal-footer {
+    border: none;
+    padding: 1.5rem 2rem;
+    background: #F9FAFB;
+  }
+
+  .btn-secondary {
+    background: #6B7280;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #4B5563;
+    transform: translateY(-2px);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #10B981, #059669);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-success:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Badge Styles */
+  .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+  }
+
+  .badge.bg-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+  }
+
+  .badge.bg-success {
+    background: linear-gradient(135deg, #10B981, #059669) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  }
+
+  .badge.bg-secondary {
+    background: linear-gradient(135deg, #6B7280, #4B5563) !important;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .detail-container {
+      padding: 1rem 0;
+    }
+
+    .page-header {
+      padding: 1.5rem;
+      border-radius: 15px;
+    }
+
+    .page-header h2 {
+      font-size: 1.5rem;
+    }
+
+    .seller-info {
+      display: block;
+    }
+
+    .info-item {
+      display: block;
+      margin: 0.75rem 0;
+    }
+
+    .seller-stats {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+    }
+
+    .table-custom {
+      font-size: 0.875rem;
+    }
+
+    .table-custom thead th,
+    .table-custom tbody td {
+      padding: 1rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-back,
+    .btn-settle {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Loading Animation */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .loading {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 1000px 100%;
+  }
+
+  /* Scrollbar Styling */
+  .table-responsive::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-responsive::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 10px;
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+    border-radius: 10px;
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #F59E0B, var(--primary-red));
+  }
+</style>
+
+<div class="detail-container">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h2><i class="bi bi-person-badge-fill"></i> Seller Details</h2>
+      <div class="seller-info">
+        <div class="info-item">
+          <strong>📞 Contact:</strong> {{ seller.contact|default:"N/A" }}
+        </div>
+        <div class="info-item">
+          <strong>✉️ Email:</strong> {{ seller.email|default:"N/A" }}
+        </div>
+      </div>
+      <a href="{% url 'pos:seller_list' %}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Back to Sellers
+      </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="seller-stats">
+      <div class="stat-card">
+        <div class="stat-label">👤 Seller Name</div>
+        <div class="stat-value" style="font-size: 1.5rem;">{{ seller.name }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">💰 Total Purchases</div>
+        <div class="stat-value">NPR {{ seller.total_purchases }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">📎 Total Payable</div>
+        <div class="stat-value">NPR {{ total_payable }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">✅ Total Paid</div>
+        <div class="stat-value">NPR {{ total_paid }}</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">📦 Total Transactions</div>
+        <div class="stat-value">{{ purchases.count }}</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-settle" data-bs-toggle="modal" data-bs-target="#settlePayableModal">
+        <i class="bi bi-credit-card"></i> Settle Payable
+      </button>
+    </div>
+
+    <!-- Settle Payable Modal -->
+    <div class="modal fade" id="settlePayableModal" tabindex="-1" aria-labelledby="settlePayableModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settlePayableModalLabel">
+              <i class="bi bi-wallet2"></i> Settle Payable for {{ seller.name }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="settlePayableForm" method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="payableSelect" class="form-label">
+                  <i class="bi bi-list-ul"></i> Select Outstanding Payable
+                </label>
+                <select id="payableSelect" name="payable_id" class="form-select">
+                  <option value="">-- Select payable --</option>
+                  {% for p in payables %}
+                  {% if p.status == 'pending' %}
+                  <option value="{{ p.id }}" data-remaining="{{ p.remaining_amount }}">Payable #{{ p.id }} – NPR {{ p.remaining_amount }} (Unpaid)</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="amountPaid" class="form-label">
+                  <i class="bi bi-cash-coin"></i> Amount Paid (NPR)
+                </label>
+                <input type="number" id="amountPaid" name="amount_paid" class="form-control" step="0.01" min="0.01"
+                  disabled placeholder="Enter payment amount">
+                <div id="outstandingHint" class="form-text mt-1"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="payMode" class="form-label">
+                  <i class="bi bi-credit-card-2-front"></i> Payment Mode
+                </label>
+                <select id="payMode" name="payment_mode" class="form-select">
+                  <option value="cash">💵 Cash</option>
+                  <option value="qr">📱 QR Payment</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="payRemark" class="form-label">
+                  <i class="bi bi-pencil-square"></i> Remark (optional)
+                </label>
+                <input id="payRemark" name="remark" class="form-control" placeholder="Add any notes here..." />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button type="button" id="settleSubmitBtn" class="btn btn-success" disabled onclick="submitSettlePayable()">
+              <i class="bi bi-check-circle"></i> Submit Payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Purchase History -->
+    <div class="history-card">
+      <div class="card-header-custom">
+        <i class="bi bi-clock-history"></i> Purchase History
+      </div>
+      <div class="card-body-custom">
+        {% if purchases %}
+        <div class="table-responsive">
+          <table class="table table-custom">
+            <thead>
+              <tr>
+                <th><i class="bi bi-calendar-event"></i> Date & Time</th>
+                <th><i class="bi bi-currency-dollar"></i> Amount</th>
+                <th><i class="bi bi-file-text"></i> Description</th>
+                <th><i class="bi bi-shop"></i> Register</th>
+                <th><i class="bi bi-check-circle"></i> Payment Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in purchases %}
+              <tr>
+                <td>
+                  <span class="date-badge">{{ p.created_at }}</span>
+                </td>
+                <td>
+                  <span class="amount-badge">NPR {{ p.amount }}</span>
+                </td>
+                <td>{{ p.description|default:"No description" }}</td>
+                <td><strong>{{ p.register }}</strong></td>
+                <td>
+                  {% if p.payable and p.payable.status == 'pending' %}
+                  <span class="badge bg-danger">Unpaid</span>
+                  {% elif p.payable and p.payable.status == 'settled' %}
+                  <span class="badge bg-success">Paid</span>
+                  {% else %}
+                  <span class="badge bg-secondary">N/A</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">📭</div>
+          <h4>No Purchase History</h4>
+          <p>No purchases have been recorded for this seller yet.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Payables Table -->
+    <div class="history-card" style="margin-top:1.5rem;">
+      <div class="card-header-custom">
+        <i class="bi bi-list-check"></i> Payables Overview
+      </div>
+      <div class="card-body-custom">
+        {% if payables %}
+        <div class="table-responsive">
+          <table class="table table-custom">
+            <thead>
+              <tr>
+                <th><i class="bi bi-hash"></i> ID</th>
+                <th><i class="bi bi-calendar-plus"></i> Created</th>
+                <th><i class="bi bi-cash-stack"></i> Original Amount</th>
+                <th><i class="bi bi-wallet"></i> Remaining</th>
+                <th><i class="bi bi-info-circle"></i> Status</th>
+                <th><i class="bi bi-info-circle"></i> Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in payables %}
+              <tr>
+                <td><strong>#{{ p.id }}</strong></td>
+                <td><span class="date-badge">{{ p.created_at }}</span></td>
+                <td><span class="amount-badge">NPR {{ p.amount }}</span></td>
+                <td><strong style="color: var(--primary-red);">NPR {{ p.remaining_amount }}</strong></td>
+                <td>
+                  {% if p.status == 'pending' %}
+                  <span class="badge bg-danger">{{ p.get_status_display }}</span>
+                  {% elif p.status == 'settled' %}
+                  <span class="badge bg-success">{{ p.get_status_display }}</span>
+                  {% else %}
+                  <span class="badge bg-secondary">{{ p.get_status_display }}</span>
+                  {% endif %}
+                </td>
+                <td>-</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">🧾</div>
+          <h4>No Payables</h4>
+          <p>There are no outstanding payables for this seller.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const payableSelect = document.getElementById('payableSelect');
+    const amountPaid = document.getElementById('amountPaid');
+    const outstandingHint = document.getElementById('outstandingHint');
+    const submitBtn = document.getElementById('settleSubmitBtn');
+    const payMode = document.getElementById('payMode');
+    const payRemark = document.getElementById('payRemark');
+
+    function reset() {
+      amountPaid.value = '';
+      amountPaid.disabled = true;
+      submitBtn.disabled = true;
+      outstandingHint.textContent = '';
+    }
+
+    if (payableSelect) {
+      payableSelect.addEventListener('change', function () {
+        const opt = payableSelect.selectedOptions[0];
+        if (!opt || !opt.value) { reset(); return; }
+        const remaining = parseFloat(opt.dataset.remaining || '0');
+        if (isNaN(remaining)) { reset(); return; }
+        outstandingHint.innerHTML = '<i class="bi bi-info-circle-fill"></i> Outstanding: <strong>NPR ' + remaining.toFixed(2) + '</strong>';
+        outstandingHint.style.color = 'var(--primary-red)';
+        amountPaid.max = remaining;
+        amountPaid.disabled = false;
+        submitBtn.disabled = false;
+        amountPaid.focus();
+      });
+    }
+
+    window.submitSettlePayable = function () {
+      const opt = payableSelect.selectedOptions[0];
+      if (!opt || !opt.value) {
+        alert('⚠️ Please select a payable to settle.');
+        return;
+      }
+      const payableId = opt.value;
+      const amt = parseFloat(amountPaid.value);
+      if (isNaN(amt) || amt <= 0) {
+        alert('⚠️ Enter a valid payment amount.');
+        return;
+      }
+      const max = parseFloat(amountPaid.max || '0');
+      if (amt > max) {
+        alert('⚠️ Amount cannot exceed outstanding balance.');
+        return;
+      }
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
+      const data = new FormData();
+      data.append('payable_id', payableId);
+      data.append('amount_paid', amt);
+      data.append('payment_mode', payMode.value);
+      data.append('remark', payRemark.value || '');
+
+      const csrftokenEl = document.querySelector('[name=csrfmiddlewaretoken]');
+      const csrftoken = csrftokenEl ? csrftokenEl.value : '';
+
+      fetch(`{% url 'pos:seller_pay' seller.id %}`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: data,
+      }).then(res => res.json()).then(json => {
+        if (json.success) {
+          // Update UI
+          if (json.settled) {
+            opt.remove();
+          } else if (json.remaining_amount !== undefined) {
+            opt.dataset.remaining = json.remaining_amount;
+          }
+          outstandingHint.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Payment recorded successfully! Remaining: <strong>NPR ' + (json.remaining_amount || 0).toFixed(2) + '</strong>';
+          outstandingHint.style.color = '#059669';
+
+          // Reset form
+          amountPaid.value = '';
+          amountPaid.disabled = true;
+          payRemark.value = '';
+
+          // Refresh page after 2 seconds
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else {
+          alert('❌ ' + (json.error || 'Failed to record payment.'));
+        }
+      }).catch(err => {
+        console.error(err);
+        alert('❌ Request failed. Please try again.');
+      }).finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Submit Payment';
+      });
+    };
+  })();
+</script>
+{% endblock %}

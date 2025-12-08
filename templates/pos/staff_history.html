@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attendance History - {{ staff.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2>Attendance History - {{ staff.name }}</h2>
+  <p>Total hours (30 days): <strong>{{ total_hours }}</strong> hrs &middot; Overtime: <strong>{{ overtime_hours }}</strong> hrs &middot; Leaves: <strong>{{ leave_count }}</strong></p>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Check In</th>
+          <th>Check Out</th>
+          <th>Total Hours</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr class="{% if r.status == 'Late' %}table-warning{% elif r.status == 'Absent' %}table-danger{% endif %}">
+          <td>{{ r.date }}</td>
+          <td>{% if r.check_in %}{{ r.check_in|date:'Y-m-d H:i' }}{% else %}-{% endif %}</td>
+          <td>{% if r.check_out %}{{ r.check_out|date:'Y-m-d H:i' }}{% else %}-{% endif %}</td>
+          <td>{% if r.total_hours %}{{ r.total_hours }}{% else %}-{% endif %}</td>
+          <td>{{ r.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

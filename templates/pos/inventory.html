@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inventory Management | Zorpido{% endblock %}
+{% block meta_description %}
+<!-- Meta Description -->
+<meta name="description" content="Manage inventory at Zorpido. Monitor stock levels, update item availability, and receive low stock alerts to ensure your restaurant is always well-stocked and ready to serve customers.">
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'inventory_managment_pos/css/style.css' %}">
+<div class="inventory-container">
+  <div class="container">
+    <!-- Ensure CSRF cookie is set for AJAX POSTs: hidden token form and JS fallback -->
+    <form style="display:none;" id="__csrf_form">{% csrf_token %}</form>
+    <script>
+      (function(){
+        // If csrftoken cookie not present, try to read value from hidden csrf input and set cookie
+        function getCookie(name) {
+          const v = document.cookie.match('(?:^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+          return v ? v.pop() : null;
+        }
+        if (!getCookie('csrftoken')) {
+          try {
+            const input = document.querySelector('#__csrf_form input[name="csrfmiddlewaretoken"]');
+            if (input && input.value) {
+              // set cookie for same-site safe access
+              document.cookie = 'csrftoken=' + input.value + '; path=/';
+            }
+          } catch (e) {
+            // ignore
+          }
+        }
+      })();
+    </script>
+    <!-- Page Header -->
+    <div class="page-header">
+      <h2><i class="bi bi-box-seam"></i> Inventory Management</h2>
+      <a href="{% url 'pos:dashboard' %}" class="btn-brand-back">
+        <i class="bi bi-arrow-left"></i> Back to POS
+      </a>
+    </div>
+    
+    <!-- Low Stock Alert -->
+    {% if low_stock_items %}
+    <div class="alert-custom">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <strong>Low Stock Alert!</strong> {{ low_stock_items|length }} item(s) need immediate restocking.
+    </div>
+    
+    <div class="inventory-card">
+      <div class="card-header-custom card-header-warning">
+        <i class="bi bi-exclamation-circle"></i> Low Stock Items - Restock Required
+      </div>
+      <div class="card-body-custom">
+        <div class="table-responsive">
+          <table class="table table-custom">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Threshold</th>
+                <th>Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in low_stock_items %}
+              <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.category }}</td>
+                <td>
+                  <span id="stock-badge-{{ item.id }}" data-stock-badge="{{ item.id }}" class="badge-custom badge-danger-custom">{{ item.stock_quantity }}</span>
+                </td>
+                <td>{{ item.low_stock_threshold }}</td>
+                <td><strong>NPR {{ item.price }}</strong></td>
+                <td>
+                  <button class="btn-action btn-add-stock"
+                    data-item-id="{{ item.id }}"
+                    data-item-name="{{ item.name|escapejs }}"
+                    data-item-sku="{{ item.id }}"
+                    data-price="{{ item.price }}"
+                    data-purchase-price="{{ item.purchase_price }}"
+                    data-current-stock="{{ item.stock_quantity|default:0 }}"
+                    data-low-threshold="{{ item.low_stock_threshold }}"
+                    data-availability="{{ item.availability }}"
+                    onclick="openStockModalFromButton(this)">
+                    <i class="bi bi-plus-circle"></i> Add Stock
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- All Items -->
+    <div class="inventory-card">
+      <div class="card-header-custom">
+        <i class="bi bi-list-ul"></i> All Inventory Items
+      </div>
+      <div class="card-body-custom">
+        <div class="search-box">
+          <input type="text" class="form-control" id="searchInput" 
+                 placeholder="Search items by name..." onkeyup="filterTable()">
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-custom" id="inventoryTable">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Stock Level</th>
+                <th>Threshold</th>
+                <th>Status</th>
+                <th>Purchase Price</th>
+                <th>Selling Price</th>
+                <th>Margin</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in all_items %}
+              <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.category }}</td>
+                <td>
+                  <span id="stock-badge-{{ item.id }}" data-stock-badge="{{ item.id }}" class="badge-custom {% if item.is_low_stock %}badge-warning-custom{% else %}badge-success-custom{% endif %}">
+                    {{ item.stock_quantity }}
+                  </span>
+                </td>
+                <td>{{ item.low_stock_threshold }}</td>
+                <td>
+                  {% if item.availability == 'available' %}
+                    <span id="availability-{{ item.id }}" data-availability="{{ item.id }}" class="badge-custom badge-success-custom">Available</span>
+                  {% elif item.availability == 'out_of_stock' %}
+                    <span id="availability-{{ item.id }}" data-availability="{{ item.id }}" class="badge-custom badge-danger-custom">Out of Stock</span>
+                  {% else %}
+                    <span id="availability-{{ item.id }}" data-availability="{{ item.id }}" class="badge-custom badge-info-custom">{{ item.availability|title }}</span>
+                  {% endif %}
+                </td>
+                <td><strong>NPR {{ item.purchase_price|default:"0.00" }}</strong></td>
+                <td><strong>NPR {{ item.price }}</strong></td>
+                <td>
+                  <strong>NPR {{ item.margin }}</strong>
+                </td>
+                <td>
+                  <button class="btn-action btn-update-stock"
+                    data-item-id="{{ item.id }}"
+                    data-item-name="{{ item.name|escapejs }}"
+                    data-item-sku="{{ item.id }}"
+                    data-price="{{ item.price }}"
+                    data-purchase-price="{{ item.purchase_price }}"
+                    data-current-stock="{{ item.stock_quantity|default:0 }}"
+                    data-low-threshold="{{ item.low_stock_threshold }}"
+                    data-availability="{{ item.availability }}"
+                    onclick="openStockModalFromButton(this)">
+                    <i class="bi bi-pencil"></i> Update
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stock Update Modal -->
+<div class="modal fade modal-custom" id="stockModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📦 Update Stock: <span id="modalItemName"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label">SKU</label>
+              <div id="modalSKU" class="text-muted">#</div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Purchase Price (Cost)</label>
+              <input type="number" step="0.01" class="form-control" id="modalPurchasePrice" placeholder="0.00">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Selling Price</label>
+              <input type="number" step="0.01" class="form-control" id="modalSellingPrice" placeholder="0.00">
+            </div>
+        <div class="mb-4">
+          <label class="form-label">Current Stock Level</label>
+          <div class="current-stock-badge" id="modalCurrentStock"></div>
+        </div>
+        
+        <div class="mb-3">
+          <label for="stockAction" class="form-label">📋 Stock Action</label>
+          <select class="form-select" id="stockAction">
+            <option value="add">➕ Add Stock (Increase)</option>
+            <option value="decrease">➖ Decrease Stock (Reduce)</option>
+            <option value="set">🔄 Set Stock (Override)</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label for="stockQuantity" class="form-label">🔢 Quantity</label>
+          <input type="number" class="form-control" id="stockQuantity" min="0" value="0" placeholder="Enter quantity">
+        </div>
+        
+        <div class="mb-3">
+          <label for="lowThreshold" class="form-label">⚠️ Low Stock Threshold</label>
+          <input type="number" class="form-control" id="lowThreshold" min="0" value="0" placeholder="Minimum stock alert level">
+        </div>
+        
+        <div class="mb-3">
+          <label for="availabilitySelect" class="form-label">📊 Availability Status</label>
+          <select id="availabilitySelect" class="form-select">
+            <option value="available">✅ Available</option>
+            <option value="out_of_stock">❌ Out of Stock</option>
+            <option value="seasonal">🌟 Seasonal</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-modal-confirm" onclick="updateStock()">
+          <i class="bi bi-check-circle"></i> Update Stock
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'inventory_managment_pos/js/scripts.js' %}"></script>
+{% endblock %}

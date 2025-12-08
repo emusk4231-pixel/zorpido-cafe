@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}POS Dashboard | Zorpido{% endblock %}
+{% block meta_description %}
+<!-- Meta Description -->
+<meta name="description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together. Relax, dine, and enjoy a taste that feels like home.">
+{% endblock %}
+
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'pos_dashboard/css/style.css' %}">
+
+<div class="container-fluid">
+        <!-- REMOVED: CSRF setup (was used for Expense feature which is now removed) -->
+    <!-- Enhanced Header -->
+    <div class="pos-header">
+        <div class="container-fluid">
+            <div class="pos-header-content">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <h2><i class="bi bi-shop"></i> Point of Sale</h2>
+                        <span class="staff-badge">
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ user.full_name }}
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                            <a href="{% url 'pos:overview' %}" class="pos-action-btn">
+                                <i class="bi bi-graph-up"></i> Overview
+                            </a>
+                            <a href="{% url 'pos:created_orders' %}" class="pos-action-btn">
+                                <i class="bi bi-list-ul"></i> Active
+                            </a>
+                            <a href="{% url 'pos:completed_orders' %}" class="pos-action-btn">
+                                <i class="bi bi-check-circle"></i> Completed
+                            </a>
+                            {% if active_register %}
+                            <a href="{% url 'pos:inventory' %}" class="pos-action-btn">
+                                <i class="bi bi-box-seam"></i> Inventory
+                            </a>
+                            <a href="{% url 'pos:seller_list' %}" class="pos-action-btn">
+                                <i class="bi bi-people-fill"></i> Sellers
+                            </a>
+                            <a href="{% url 'pos:seller_create' %}" class="pos-action-btn">
+                                <i class="bi bi-person-plus"></i> Add Seller
+                            </a>
+                            <a href="{% url 'pos:credit_management' %}" class="pos-action-btn">
+                                <i class="bi bi-wallet2"></i> Credit
+                            </a>
+                            <a href="{% url 'pos:expenses_list' %}" class="pos-action-btn">
+                                <i class="bi bi-cash-stack"></i> Expenses
+                            </a>
+                            <a href="{% url 'pos:expenses_by_category' %}" class="pos-action-btn">
+                                <i class="bi bi-bar-chart"></i> Expenses by Category
+                            </a>
+                            
+                            {% else %}
+                            <button class="pos-action-btn disabled" title="Open a register to enable actions" disabled>
+                                <i class="bi bi-box-seam"></i> Inventory
+                            </button>
+                            <button class="pos-action-btn disabled" title="Open a register to enable actions" disabled>
+                                <i class="bi bi-people-fill"></i> Sellers
+                            </button>
+                            <button class="pos-action-btn disabled" title="Open a register to enable actions" disabled>
+                                <i class="bi bi-person-plus"></i> Add Seller
+                            </button>
+                            <button class="pos-action-btn disabled" title="Open a register to enable actions" disabled>
+                                <i class="bi bi-wallet2"></i> Credit
+                            </button>
+                            
+                            {% endif %}
+                            <!-- REMOVED: Expense and Expenses by Category buttons (Expense feature removed) -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REMOVED: Expense Modal (Expense feature has been removed from POS) -->
+    
+    <!-- Main POS Grid -->
+    <div class="pos-container">
+        <!-- Menu Items Section -->
+        <div>
+            <div class="menu-section-card">
+                <div class="menu-section-header">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                    <h5>Menu Items</h5>
+                </div>
+                <div class="menu-section-body">
+                    <!-- Category Tabs -->
+                    <ul class="nav nav-pills category-tabs" id="categoryTabs" role="tablist">
+                        {% for category in categories %}
+                        <li class="nav-item" role="presentation">
+                            <button class="category-tab nav-link {% if forloop.first %}active{% endif %}" 
+                                    id="cat-{{ category.id }}-tab"
+                                    data-bs-toggle="pill" 
+                                    data-bs-target="#cat-{{ category.id }}" 
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="cat-{{ category.id }}"
+                                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                                {{ category.name }}
+                            </button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <!-- Category Content -->
+                    <div class="tab-content">
+                        {% for category in categories %}
+                        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+                             id="cat-{{ category.id }}">
+                            <div class="row g-3">
+                                {% for item in category.items.all %}
+                                {% if item.is_active %}
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="menu-item-card"
+                                         data-item-id="{{ item.id }}"
+                                         data-item-name="{{ item.name|escapejs }}"
+                                         data-item-price="{{ item.price }}"
+                                         onclick="addToOrderFromElement(this)">
+                                        {% if item.image %}
+                                        <img src="{{ item.image.url }}" class="menu-item-image" alt="{{ item.name }}">
+                                        {% else %}
+                                        <div class="menu-item-placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                        {% endif %}
+                                        <div class="menu-item-body">
+                                            <h6 class="menu-item-title">{{ item.name }}</h6>
+                                            <p class="menu-item-price">NPR {{ item.price }}</p>
+                                            <small class="menu-item-stock">
+                                                <i class="bi bi-box-seam"></i>
+                                                Stock: <strong>{{ item.stock_quantity }}</strong>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Cart Section -->
+        <div>
+        <div class="order-cart-card" style="position:sticky; top:90px; max-height:calc(100vh - 120px); overflow:auto;">
+                <div class="order-cart-header">
+                    <i class="bi bi-cart-fill"></i>
+                    <h5>Current Order</h5>
+                </div>
+                <div class="order-cart-body">
+                    <!-- Customer Selection -->
+                    <div class="mb-3">
+                        <label for="customerSelect" class="form-label-enhanced">
+                            <i class="bi bi-person me-1"></i>Customer
+                        </label>
+                        <select class="form-select-enhanced form-select" id="customerSelect">
+                            <option value="">Walk-in Customer</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.full_name }} - {{ customer.phone }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Order Type -->
+                    <div class="mb-3">
+                        <label class="form-label-enhanced">
+                            <i class="bi bi-list-check me-1"></i>Order Type
+                        </label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="orderType" id="dinein" value="dine_in" checked>
+                            <label class="btn btn-outline-primary" for="dinein" style="border: 2px solid #e9ecef; border-radius: 0.75rem 0 0 0.75rem; padding: 0.75rem;">
+                                <i class="bi bi-shop me-1"></i>Dine In
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="orderType" id="takeaway" value="takeaway">
+                            <label class="btn btn-outline-primary" for="takeaway" style="border: 2px solid #e9ecef; padding: 0.75rem; margin-left: -2px;">
+                                <i class="bi bi-bag me-1"></i>Takeaway
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="orderType" id="delivery" value="delivery">
+                            <label class="btn btn-outline-primary" for="delivery" style="border: 2px solid #e9ecef; border-radius: 0 0.75rem 0.75rem 0; padding: 0.75rem; margin-left: -2px;">
+                                <i class="bi bi-truck me-1"></i>Delivery
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <div class="order-items-container" id="orderItems">
+                        <div class="empty-cart-state">
+                            <i class="bi bi-cart-x"></i>
+                            <p>No items in cart</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <strong id="subtotal">NPR 0.00</strong>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <strong class="total-amount" id="total">NPR 0.00</strong>
+                        </div>
+                        
+                        <div class="action-buttons mt-3">
+                            <button class="btn-create-order" onclick="createOrder()" id="createOrderBtn" disabled>
+                                <i class="bi bi-check-circle-fill"></i>
+                                Create Order
+                            </button>
+                            <button class="btn-clear-order btn" onclick="clearOrder()">
+                                <i class="bi bi-trash me-1"></i>
+                                Clear Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Order state
+let orderItems = [];
+
+function addToOrderFromElement(el) {
+    const itemId = Number(el.getAttribute('data-item-id'));
+    const itemName = el.getAttribute('data-item-name');
+    const itemPrice = Number(el.getAttribute('data-item-price')) || 0;
+    addToOrder(itemId, itemName, itemPrice);
+    
+    // Visual feedback
+    el.classList.add('selected');
+    setTimeout(() => {
+        if (!orderItems.find(item => item.item_id === itemId)) {
+            el.classList.remove('selected');
+        }
+    }, 300);
+}
+
+function addToOrder(itemId, itemName, itemPrice) {
+    const existingItem = orderItems.find(item => item.item_id === itemId);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        orderItems.push({
+            item_id: itemId,
+            name: itemName,
+            price: itemPrice,
+            quantity: 1
+        });
+    }
+    
+    updateOrderDisplay();
+}
+
+function removeFromOrder(itemId) {
+    orderItems = orderItems.filter(item => item.item_id !== itemId);
+    
+    // Remove visual selection from menu item
+    const menuCard = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (menuCard) {
+        menuCard.classList.remove('selected');
+    }
+    
+    updateOrderDisplay();
+}
+
+function updateQuantity(itemId, delta) {
+    const item = orderItems.find(item => item.item_id === itemId);
+    if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+            removeFromOrder(itemId);
+        } else {
+            updateOrderDisplay();
+        }
+    }
+}
+
+function updateOrderDisplay() {
+    const container = document.getElementById('orderItems');
+    const createBtn = document.getElementById('createOrderBtn');
+    
+    if (orderItems.length === 0) {
+        container.innerHTML = `
+            <div class="empty-cart-state">
+                <i class="bi bi-cart-x"></i>
+                <p>No items in cart</p>
+            </div>
+        `;
+        createBtn.disabled = true;
+        
+        // Remove all selected states
+        document.querySelectorAll('.menu-item-card.selected').forEach(card => {
+            card.classList.remove('selected');
+        });
+    } else {
+        container.innerHTML = orderItems.map(item => `
+            <div class="order-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <div class="order-item-name">${item.name}</div>
+                        <small class="order-item-price">NPR ${item.price}</small>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="updateQuantity(${item.item_id}, -1)" aria-label="Decrease quantity">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <span class="quantity-display">${item.quantity}</span>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.item_id}, 1)" aria-label="Increase quantity">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                        <button class="remove-item-btn" onclick="removeFromOrder(${item.item_id})" aria-label="Remove item">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="order-item-total">
+                    <strong>NPR ${(item.price * item.quantity).toFixed(2)}</strong>
+                </div>
+            </div>
+        `).join('');
+        createBtn.disabled = false;
+        
+        // Update selected states
+        orderItems.forEach(item => {
+            const menuCard = document.querySelector(`[data-item-id="${item.item_id}"]`);
+            if (menuCard) {
+                menuCard.classList.add('selected');
+            }
+        });
+    }
+    
+    // Calculate totals
+    const subtotal = orderItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
+    const total = subtotal;
+    
+    const formatCurrency = (amount) => `NPR ${Number(amount).toFixed(2)}`;
+    
+    document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+    document.getElementById('total').textContent = formatCurrency(total);
+}
+
+function clearOrder() {
+    if (confirm('Clear all items from cart?')) {
+        orderItems = [];
+        updateOrderDisplay();
+    }
+}
+
+// REMOVED: External script reference pos_dashboard/js/scripts.js (Expense feature removed)
+<script>
+function createOrder() {
+    const customerId = document.getElementById('customerSelect').value;
+    const orderType = document.querySelector('input[name="orderType"]:checked').value;
+    
+    if (orderItems.length === 0) {
+        alert('Please add items to the order');
+        return;
+    }
+    
+    const orderData = {
+        customer_id: customerId || null,
+        order_type: orderType,
+        items: orderItems
+    };
+    
+    const createBtn = document.getElementById('createOrderBtn');
+    createBtn.disabled = true;
+    createBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+    
+    fetch('{% url "pos:create_order" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Order ${data.order_number} created successfully!`);
+            window.location.href = `/pos/order/${data.order_id}/payment/`;
+        } else {
+            alert('Error: ' + data.error);
+            createBtn.disabled = false;
+            createBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Create Order';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to create order');
+        createBtn.disabled = false;
+        createBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Create Order';
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Category tab functionality is handled by Bootstrap
+    
+    // Add visual feedback for order type selection
+    document.querySelectorAll('input[name="orderType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Bootstrap handles the visual state automatically
+            console.log('Order type selected:', this.value);
+        });
+    });
+
+    // Expense modal: show/hide payment mode based on payment status
+    const paymentStatusElem = document.getElementById('expensePaymentStatus');
+    const paymentModeGroup = document.getElementById('paymentModeGroup');
+    if (paymentStatusElem && paymentModeGroup) {
+        const togglePaymentMode = () => {
+            if (paymentStatusElem.value === 'paid') {
+                paymentModeGroup.style.display = '';
+            } else {
+                paymentModeGroup.style.display = 'none';
+            }
+        };
+        paymentStatusElem.addEventListener('change', togglePaymentMode);
+        togglePaymentMode();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Advanced Overview | Zorpido POS{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'pos/css/advanced_overview.css' %}">
+
+<div class="advanced-overview-wrapper">
+  <!-- Enhanced Header Section -->
+  <div class="overview-header-enhanced">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-12 mb-3 mb-lg-0">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="bi bi-speedometer2"></i>
+            </div>
+            <div class="header-text">
+              <h1 class="page-title">Advanced Analytics</h1>
+              <p class="page-subtitle">Comprehensive insights into sales, expenses, inventory and customers</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+          <div class="header-actions">
+            <div class="range-selector">
+              <button class="range-btn active" id="range-day" data-range="day">
+                <i class="bi bi-calendar-day"></i>
+                <span>Day</span>
+              </button>
+              <button class="range-btn" id="range-week" data-range="week">
+                <i class="bi bi-calendar-week"></i>
+                <span>Week</span>
+              </button>
+              <button class="range-btn" id="range-month" data-range="month">
+                <i class="bi bi-calendar-month"></i>
+                <span>Month</span>
+              </button>
+            </div>
+            <a href="{% url 'pos:overview' %}" class="back-link">
+              <i class="bi bi-arrow-left"></i>
+              <span>Back to Overview</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container-fluid overview-content">
+    <!-- Loading State -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading analytics...</p>
+      </div>
+    </div>
+
+    <!-- Summary Cards Section -->
+    <div class="summary-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-graph-up"></i>
+          Key Metrics
+        </h2>
+        <p class="section-subtitle">Real-time overview of your business performance</p>
+      </div>
+      <div class="row g-4" id="summary-cards">
+        <!-- Cards will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <div class="row g-4">
+        <!-- Main Sales Chart -->
+        <div class="col-lg-8 col-md-12">
+          <div class="chart-card sales-chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">
+                  <i class="bi bi-graph-up-arrow"></i>
+                  Sales Trend Analysis
+                </h3>
+                <p class="chart-subtitle">Track your sales performance over time</p>
+              </div>
+              <div class="chart-badge sales-badge">
+                <i class="bi bi-arrow-up"></i>
+                Trending
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="salesChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Charts -->
+        <div class="col-lg-4 col-md-12">
+          <!-- Expenses Chart -->
+          <div class="chart-card expenses-chart-card mb-4">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">
+                  <i class="bi bi-cash-stack"></i>
+                  Expenses Breakdown
+                </h3>
+                <p class="chart-subtitle">Monitor spending patterns</p>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="expensesChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Profit Chart -->
+          <div class="chart-card profit-chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">
+                  <i class="bi bi-piggy-bank"></i>
+                  Profit Analysis
+                </h3>
+                <p class="chart-subtitle">Revenue vs expenses</p>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="profitChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'pos/js/advanced_overview.js' %}"></script>
+{% endblock %}

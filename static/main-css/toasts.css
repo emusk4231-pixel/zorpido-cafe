@@ -1,0 +1,96 @@
+/*
+  toasts.css
+  - Styles for modern toast notifications (right-side, slide-in)
+  - Success = green background, Error = red background
+  - Responsive and accessible
+*/
+
+:root{
+  --toast-success: #1e9b51; /* green */
+  --toast-error: #d64545; /* red */
+  --toast-text: #ffffff;
+  --toast-shadow: 0 12px 30px rgba(10,10,10,0.12);
+  --toast-width: 360px;
+}
+
+/* Container fixed on the right side, vertically centered by default */
+.zorpido-toast-container{
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 3000;
+  pointer-events: none; /* let clicks through when no toast */
+}
+
+/* Individual toast styles */
+.zorpido-toast{
+  pointer-events: auto; /* allow interaction */
+  background: var(--toast-success);
+  color: var(--toast-text);
+  min-width: 220px;
+  max-width: var(--toast-width);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: var(--toast-shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(110%); /* start off-screen to the right */
+  opacity: 0;
+  transition: transform .36s cubic-bezier(.2,.9,.2,1), opacity .36s ease;
+  font-family: inherit;
+}
+
+/* Visible state: slide-in */
+.zorpido-toast.show{
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Success / Error variants */
+.zorpido-toast.toast-success{ background: var(--toast-success); }
+.zorpido-toast.toast-error{ background: var(--toast-error); }
+
+/* Content text */
+.zorpido-toast .toast-message{
+  flex: 1 1 auto;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Close button */
+.zorpido-toast .toast-close{
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.95);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  opacity: .9;
+}
+.zorpido-toast .toast-close:focus{ outline: 2px solid rgba(255,255,255,0.16); }
+
+/* Small icon (optional) */
+.zorpido-toast .toast-icon{
+  font-size: 18px;
+  display:block;
+  width:22px;height:22px;
+  flex: 0 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px){
+  .zorpido-toast-container{ right: 8px; left: 8px; top: auto; bottom: 16px; }
+  .zorpido-toast{ max-width: calc(100% - 32px); }
+}
+
+/* Animation helper for slide-out (optional) */
+.zorpido-toast.hiding{
+  transform: translateX(110%);
+  opacity: 0;
+}

@@ -1,0 +1,510 @@
+{% extends 'base.html' %}
+{% block title %}Expenses | Zorpido{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --zorpido-red: #dc2626;
+        --zorpido-red-hover: #b91c1c;
+        --zorpido-yellow: #fbbf24;
+        --zorpido-yellow-light: #fef3c7;
+        --zorpido-white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-900: #111827;
+    }
+
+    .expenses-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .title-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-yellow));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-zorpido {
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-primary-zorpido {
+        background: var(--zorpido-red);
+        color: white;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-primary-zorpido:hover {
+        background: var(--zorpido-red-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+
+    .btn-secondary-zorpido {
+        background: white;
+        color: var(--zorpido-red);
+        border: 2px solid var(--zorpido-red);
+    }
+
+    .btn-secondary-zorpido:hover {
+        background: var(--zorpido-yellow-light);
+        border-color: var(--zorpido-yellow);
+        color: var(--zorpido-red);
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--zorpido-yellow);
+    }
+
+    .filter-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--gray-700);
+    }
+
+    .form-control-zorpido {
+        padding: 0.625rem 0.875rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+        background: white;
+    }
+
+    .form-control-zorpido:focus {
+        outline: none;
+        border-color: var(--zorpido-red);
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .expenses-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .expenses-table thead {
+        background: linear-gradient(135deg, var(--zorpido-red), #ef4444);
+    }
+
+    .expenses-table th {
+        padding: 1rem;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: white;
+    }
+
+    .expenses-table tbody tr {
+        border-bottom: 1px solid var(--gray-200);
+        transition: background-color 0.2s ease;
+    }
+
+    .expenses-table tbody tr:hover {
+        background-color: var(--zorpido-yellow-light);
+    }
+
+    .expenses-table td {
+        padding: 1rem;
+        font-size: 0.875rem;
+        color: var(--gray-700);
+    }
+
+    .category-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--zorpido-yellow-light);
+        color: var(--zorpido-red);
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .amount-cell {
+        font-weight: 700;
+        color: var(--zorpido-red);
+        font-size: 0.9375rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-edit {
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border: 1px solid var(--gray-300);
+    }
+
+    .btn-edit:hover {
+        background: var(--zorpido-yellow-light);
+        border-color: var(--zorpido-yellow);
+    }
+
+    .btn-delete {
+        background: white;
+        color: var(--zorpido-red);
+        border: 1px solid var(--zorpido-red);
+    }
+
+    .btn-delete:hover {
+        background: var(--zorpido-red);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--gray-600);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .pagination-zorpido {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .page-link-zorpido {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .page-link-zorpido.active {
+        background: var(--zorpido-red);
+        color: white;
+    }
+
+    .page-link-zorpido:not(.active):not(.disabled) {
+        background: white;
+        color: var(--zorpido-red);
+        border: 1px solid var(--gray-300);
+    }
+
+    .page-link-zorpido:not(.active):not(.disabled):hover {
+        background: var(--zorpido-yellow-light);
+        border-color: var(--zorpido-yellow);
+    }
+
+    .page-link-zorpido.disabled {
+        color: var(--gray-600);
+        background: var(--gray-100);
+        cursor: default;
+    }
+
+    @media (max-width: 768px) {
+        .expenses-container {
+            padding: 1rem;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .filter-form {
+            grid-template-columns: 1fr;
+        }
+
+        .expenses-table {
+            font-size: 0.8125rem;
+        }
+
+        .expenses-table th,
+        .expenses-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+
+    .delete-form {
+        display: inline;
+    }
+
+    .date-cell {
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="expenses-container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <span class="title-icon">💰</span>
+            Expenses
+        </h1>
+        <div class="header-actions">
+            <a href="{% url 'pos:expense_add' %}" class="btn-zorpido btn-primary-zorpido">
+                <span>+</span> Add Expense
+            </a>
+            <a href="{% url 'pos:expenses_by_category' %}" class="btn-zorpido btn-secondary-zorpido">
+                <span>📊</span> View by Category
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-card">
+        <div class="filter-title">🔍 Filter Expenses</div>
+        <form class="filter-form" method="get">
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-control-zorpido">
+                    <option value="">All Categories</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if filter_cat|default:'' == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">From Date</label>
+                <input type="date" name="from" value="{{ from_date }}" class="form-control-zorpido">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">To Date</label>
+                <input type="date" name="to" value="{{ to_date }}" class="form-control-zorpido">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn-zorpido btn-primary-zorpido" style="margin-top: 1.625rem;">
+                    Apply Filters
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="expenses-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in expenses %}
+                    <tr>
+                        <td class="date-cell">{{ e.date }}</td>
+                        <td><span class="category-badge">{{ e.category.name }}</span></td>
+                        <td class="amount-cell">{{ e.amount }}</td>
+                        <td>{{ e.description|truncatechars:80 }}</td>
+                        <td>{{ e.created_by }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'pos:expense_edit' e.id %}" class="btn-action btn-edit">
+                                    ✏️ Edit
+                                </a>
+                                <form method="post" action="{% url 'pos:expense_delete' e.id %}" class="delete-form"
+                                    onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-action btn-delete">🗑️ Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">📭</div>
+                                <h3 style="color: var(--gray-700); margin-bottom: 0.5rem;">No expenses found</h3>
+                                <p>Try adjusting your filters or add your first expense.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if expenses.paginator.num_pages > 1 %}
+    <div class="pagination-wrapper">
+        <nav class="pagination-zorpido">
+            {% if expenses.has_previous %}
+            <a href="?page={{ expenses.previous_page_number }}" class="page-link-zorpido">
+                ← Previous
+            </a>
+            {% endif %}
+
+            <span class="page-link-zorpido active">
+                Page {{ expenses.number }} of {{ expenses.paginator.num_pages }}
+            </span>
+
+            {% if expenses.has_next %}
+            <a href="?page={{ expenses.next_page_number }}" class="page-link-zorpido">
+                Next →
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Smooth transitions for table rows
+    document.addEventListener('DOMContentLoaded', function () {
+        const rows = document.querySelectorAll('.expenses-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 30);
+        });
+
+        // Enhance delete confirmation
+        const deleteForms = document.querySelectorAll('.delete-form');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                const description = this.closest('tr').querySelector('td:nth-child(4)').textContent.trim();
+                if (!confirm(`Are you sure you want to delete this expense?\n\n"${description}"\n\nThis action cannot be undone.`)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Auto-submit filter on category change (optional UX enhancement)
+        const categorySelect = document.querySelector('select[name="category"]');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function () {
+                // Optionally auto-submit: this.form.submit();
+            });
+        }
+    });
+</script>
+{% endblock %}

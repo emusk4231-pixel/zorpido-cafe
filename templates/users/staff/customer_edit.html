@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Customer: {{ customer.email }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a href="{% url 'users:staff_customer_list' %}" class="btn btn-secondary">Back</a>
+  </form>
+
+  <h4 class="mt-4">Credit History (POS + Loyalty)</h4>
+  <ul class="list-group">
+    {% for t in credit_history %}
+      <li class="list-group-item">
+        <strong>{{ t.created_at }}</strong> — 
+        {% if t.source == 'pos' %}
+          <span class="badge bg-info text-dark">POS</span>
+          <span>{{ t.type|capfirst }}</span>
+          - Rs. {{ t.amount }}
+          {% if t.note %}- {{ t.note }}{% endif %}
+        {% else %}
+          <span class="badge bg-secondary">Loyalty</span>
+          <span>{{ t.type|capfirst }}</span>
+          - Rs. {{ t.amount }}
+          {% if t.note %}- {{ t.note }}{% endif %}
+        {% endif %}
+      </li>
+    {% empty %}
+      <li class="list-group-item">No credit history.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

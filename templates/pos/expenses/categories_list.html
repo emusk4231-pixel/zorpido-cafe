@@ -1,0 +1,565 @@
+{% extends 'base.html' %}
+{% block title %}Expenses by Category | Zorpido{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --zorpido-red: #dc2626;
+        --zorpido-red-hover: #b91c1c;
+        --zorpido-red-light: #fee2e2;
+        --zorpido-yellow: #fbbf24;
+        --zorpido-yellow-light: #fef3c7;
+        --zorpido-yellow-dark: #f59e0b;
+        --zorpido-white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-900: #111827;
+    }
+
+    .category-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    /* Header Section */
+    .page-header-category {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title-category {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .title-icon-category {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-yellow));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .header-actions-category {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-category {
+        padding: 0.625rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-primary-category {
+        background: var(--zorpido-red);
+        color: white;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-primary-category:hover {
+        background: var(--zorpido-red-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+
+    .btn-secondary-category {
+        background: white;
+        color: var(--zorpido-red);
+        border: 2px solid var(--zorpido-red);
+    }
+
+    .btn-secondary-category:hover {
+        background: var(--zorpido-yellow-light);
+        border-color: var(--zorpido-yellow);
+    }
+
+    /* Grid Layout */
+    .category-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Category Totals Card */
+    .totals-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 6px solid var(--zorpido-yellow);
+    }
+
+    .card-header-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--gray-100);
+    }
+
+    .card-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--zorpido-yellow-light);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    /* Category List */
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .category-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .category-item:hover {
+        background: var(--zorpido-yellow-light);
+        border-color: var(--zorpido-yellow);
+        transform: translateX(5px);
+    }
+
+    .category-name {
+        font-weight: 600;
+        color: var(--gray-700);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .category-emoji {
+        font-size: 1.25rem;
+    }
+
+    .category-amount {
+        background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-yellow-dark));
+        color: white;
+        padding: 0.375rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9375rem;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+    }
+
+    .empty-state-category {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--gray-600);
+    }
+
+    .empty-icon-category {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    /* Summary Cards */
+    .summary-section {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-left: 6px solid var(--zorpido-red);
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .summary-stat {
+        background: linear-gradient(135deg, var(--gray-50), white);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 2px solid var(--gray-200);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-stat::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--zorpido-red);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .summary-stat:hover {
+        border-color: var(--zorpido-yellow);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+        transform: translateY(-4px);
+    }
+
+    .summary-stat:hover::before {
+        transform: scaleY(1);
+    }
+
+    .stat-label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stat-icon {
+        font-size: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.875rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-yellow-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-sublabel {
+        font-size: 0.75rem;
+        color: var(--gray-600);
+        margin-top: 0.25rem;
+    }
+
+    /* Chart Placeholder */
+    .chart-container {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 1.5rem;
+        border-top: 4px solid var(--zorpido-yellow);
+    }
+
+    .chart-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 300px;
+        background: linear-gradient(135deg, var(--gray-50), var(--zorpido-yellow-light));
+        border-radius: 12px;
+        border: 2px dashed var(--gray-300);
+        color: var(--gray-600);
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 968px) {
+        .category-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .category-container {
+            padding: 1rem;
+        }
+
+        .page-header-category {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .page-title-category {
+            font-size: 1.5rem;
+        }
+
+        .title-icon-category {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
+
+        .totals-card,
+        .summary-section {
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-in {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* Progress Bar for Categories */
+    .category-progress {
+        width: 100%;
+        height: 4px;
+        background: var(--gray-200);
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+
+    .category-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--zorpido-red), var(--zorpido-yellow));
+        border-radius: 2px;
+        transition: width 0.5s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="category-container">
+    <!-- Header -->
+    <div class="page-header-category">
+        <h1 class="page-title-category">
+            <span class="title-icon-category">📊</span>
+            Expenses by Category
+        </h1>
+        <div class="header-actions-category">
+            <a href="{% url 'pos:expense_category_create' %}" class="btn-category btn-primary-category">
+                <span>➕</span> Add Category
+            </a>
+            <a href="{% url 'pos:expenses_list' %}" class="btn-category btn-secondary-category">
+                <span>📋</span> All Expenses
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="category-grid">
+        <!-- Category Totals -->
+        <div class="totals-card">
+            <div class="card-header-custom">
+                <div class="card-icon">🏷️</div>
+                <h2 class="card-title">Category Breakdown</h2>
+            </div>
+
+            <div class="category-list">
+                {% for t in totals %}
+                <div class="category-item animate-in" style="animation-delay: {{ forloop.counter0|add:'0' }}00ms">
+                    <div class="category-name">
+                        <span class="category-emoji">
+                            {% if 'food' in t.category__name|lower %}🍔
+                            {% elif 'transport' in t.category__name|lower %}🚗
+                            {% elif 'rent' in t.category__name|lower %}🏠
+                            {% elif 'utility' in t.category__name|lower %}💡
+                            {% elif 'entertainment' in t.category__name|lower %}🎬
+                            {% elif 'health' in t.category__name|lower %}⚕️
+                            {% elif 'education' in t.category__name|lower %}📚
+                            {% elif 'shopping' in t.category__name|lower %}🛒
+                            {% else %}💰
+                            {% endif %}
+                        </span>
+                        {{ t.category__name }}
+                    </div>
+                    <div class="category-amount">{{ t.total }}</div>
+                </div>
+                {% empty %}
+                <div class="empty-state-category">
+                    <div class="empty-icon-category">📭</div>
+                    <p>No category data available</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="card-header-custom">
+                <div class="card-icon">📈</div>
+                <h2 class="card-title">Quick Summary</h2>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-stat animate-in" style="animation-delay: 100ms">
+                    <div class="stat-label">
+                        <span class="stat-icon">📅</span>
+                        Today
+                    </div>
+                    <div class="stat-value">{{ summary.today|default:"0.00" }}</div>
+                    <div class="stat-sublabel">Total spent today</div>
+                </div>
+
+                <div class="summary-stat animate-in" style="animation-delay: 200ms">
+                    <div class="stat-label">
+                        <span class="stat-icon">📆</span>
+                        This Week
+                    </div>
+                    <div class="stat-value">{{ summary.this_week|default:"0.00" }}</div>
+                    <div class="stat-sublabel">Last 7 days</div>
+                </div>
+
+                <div class="summary-stat animate-in" style="animation-delay: 300ms">
+                    <div class="stat-label">
+                        <span class="stat-icon">🗓️</span>
+                        This Month
+                    </div>
+                    <div class="stat-value">{{ summary.this_month|default:"0.00" }}</div>
+                    <div class="stat-sublabel">Current month total</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Visualization -->
+    <div class="chart-container animate-in" style="animation-delay: 400ms">
+        <div class="card-header-custom" style="border: none; padding-bottom: 0;">
+            <div class="card-icon">📉</div>
+            <h2 class="card-title">Visual Analytics</h2>
+        </div>
+        <div class="chart-placeholder" id="chartArea">
+            <div style="text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <div>Interactive chart visualization area</div>
+                <div style="font-size: 0.875rem; color: var(--gray-600); margin-top: 0.5rem;">
+                    Connect a charting library for detailed insights
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate category items
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            setTimeout(() => {
+                item.style.transition = 'opacity 0.5s ease, transform 0.3s ease';
+                item.style.opacity = '1';
+            }, index * 100);
+        });
+
+        // Add progress bars to category items (visual enhancement)
+        const totalsArray = [];
+        categoryItems.forEach(item => {
+            const amountText = item.querySelector('.category-amount').textContent.trim();
+            const amount = parseFloat(amountText.replace(/[^0-9.-]/g, ''));
+            totalsArray.push(amount);
+        });
+
+        const maxAmount = Math.max(...totalsArray);
+
+        categoryItems.forEach((item, index) => {
+            const amount = totalsArray[index];
+            const percentage = (amount / maxAmount) * 100;
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'category-progress';
+            progressBar.innerHTML = `<div class="category-progress-bar" style="width: 0%"></div>`;
+
+            item.appendChild(progressBar);
+
+            setTimeout(() => {
+                const bar = progressBar.querySelector('.category-progress-bar');
+                bar.style.width = percentage + '%';
+            }, 500 + (index * 100));
+        });
+
+        // Animate stat cards on scroll
+        const stats = document.querySelectorAll('.summary-stat');
+        const observerOptions = {
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        stats.forEach(stat => {
+            stat.style.opacity = '0';
+            stat.style.transform = 'translateY(20px)';
+            observer.observe(stat);
+        });
+
+        // Add hover effect sound/vibration (optional - commented out)
+        /*
+        categoryItems.forEach(item => {
+          item.addEventListener('mouseenter', () => {
+            if (navigator.vibrate) navigator.vibrate(10);
+          });
+        });
+        */
+    });
+</script>
+{% endblock %}
