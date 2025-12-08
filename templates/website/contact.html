@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Get In Touch | Zorpido{% endblock %}
@@ -238,4 +239,246 @@
 
 <script src="{% static 'contact/js/scripts.js' %}"></script>
 
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Get In Touch | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Have questions or feedback? Contact Zorpido's friendly team for assistance, reservations, or inquiries. We're here to help you have the best dining experience!">
+{% endblock %}
+
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'contact/css/style.css' %}">
+
+<div class="zorpido-contact-page">
+    <i class="bi bi-envelope-heart zorpido-floating-shape zorpido-shape-1"></i>
+    <i class="bi bi-chat-heart zorpido-floating-shape zorpido-shape-2"></i>
+    <i class="bi bi-telephone zorpido-floating-shape zorpido-shape-3"></i>
+
+    <div class="zorpido-contact-hero">
+        <div class="container text-center">
+            <h1 class="zorpido-hero-title mb-3">We'd Love to Hear From You</h1>
+            <p class="zorpido-hero-subtitle">Have a question or feedback? Our team is here to help.</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card zorpido-contact-form-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="zorpido-form-header">
+                            <h2 class="zorpido-form-title">
+                                <i class="bi bi-chat-dots-fill"></i>
+                                <span>Send Us a Message</span>
+                            </h2>
+                            <p class="text-muted small mb-0">We typically respond within 24 hours</p>
+                        </div>
+                        
+                        <form method="post" id="contactForm">
+                            {% csrf_token %}
+                            
+<div class="form-fields">
+    {% for field in form %}
+        <div class="zorpido-form-group">
+            <label for="{{ field.id_for_label }}" class="zorpido-form-label">
+                {% if field.name == 'name' %}
+                    <i class="bi bi-person-fill"></i>
+                {% elif field.name == 'email' %}
+                    <i class="bi bi-envelope-fill"></i>
+                {% elif field.name == 'subject' %}
+                    <i class="bi bi-bookmark-fill"></i>
+                {% elif field.name == 'message' %}
+                    <i class="bi bi-chat-text-fill"></i>
+                {% else %}
+                    <i class="bi bi-pencil-fill"></i>
+                {% endif %}
+                {{ field.label }}
+                {% if field.field.required %}
+                    <span class="required-star">*</span>
+                {% endif %}
+            </label>
+
+            {% if field.name == 'message' %}
+                <textarea 
+                    name="{{ field.name }}" 
+                    id="{{ field.id_for_label }}"
+                    class="form-control zorpido-form-control {% if field.errors %}is-invalid{% endif %}"
+                    rows="5"
+                    placeholder="Write your message here..."
+                    {% if field.field.required %}required{% endif %}
+                >{{ field.value|default_if_none:'' }}</textarea>
+            {% else %}
+                <input 
+                    type="{{ field.field.widget.input_type }}" 
+                    name="{{ field.name }}" 
+                    id="{{ field.id_for_label }}"
+                    class="form-control zorpido-form-control {% if field.errors %}is-invalid{% endif %}"
+                    value="{{ field.value|default_if_none:'' }}"
+                    placeholder="{% if field.name == 'name' %}Enter your full name{% elif field.name == 'email' %}Enter your email address{% elif field.name == 'subject' %}What is this message about? (i.e., Order Issue, Feedback, Inquiry) {% else %}Enter {{ field.label|lower }}{% endif %}"
+                    {% if field.field.required %}required{% endif %}
+                >
+            {% endif %}
+
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            
+            {% if field.errors %}
+                <div class="zorpido-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>{{ field.errors }}</span>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+                            
+                            <button type="submit" class="zorpido-btn-submit">
+                                <i class="bi bi-send-fill"></i>
+                                <span>Send Message</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 zorpido-sidebar">
+<div class="card zorpido-info-card">
+    <div class="card-body p-4">
+        <h3 class="zorpido-card-title">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>Get in Touch</span>
+        </h3>
+
+        <!-- LOCATION -->
+        <div class="zorpido-contact-item">
+            <div class="d-flex align-items-start">
+                <div class="zorpido-contact-icon">
+                    <a href="https://www.google.com/maps/place/Old+Baneshwor,+Kathmandu/"
+                       target="_blank" rel="noopener noreferrer">
+                       <i class="bi bi-geo-alt-fill"></i>
+                    </a>
+                </div>
+                <div>
+                    <h4><a href="https://maps.app.goo.gl/Y9PyZMErXejFcLCX7"
+                           target="_blank" class="text-decoration-none">Visit Us</a></h4>
+                    <p>Old Baneshwor, Kathmandu<br>Nepal</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHONE -->
+        <div class="zorpido-contact-item">
+            <div class="d-flex align-items-start">
+                <div class="zorpido-contact-icon" onclick="copyPhone()">
+                    <i class="bi bi-telephone-fill"></i>
+                </div>
+                <div>
+                    <h4>Call Us</h4>
+                    <span id="phone-text" class="text-decoration-none text-light" style="cursor:pointer;" onclick="copyPhone()">+977 9845910341</span>
+                    <small id="copy-status" style="font-size:12px; color:var(--primary-color); display:none;">Copied!</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="zorpido-contact-item">
+            <div class="d-flex align-items-start">
+                <div class="zorpido-contact-icon">
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=zorpido@gmail.com"
+                       target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-envelope-fill"></i>
+                    </a>
+                </div>
+                <div>
+                    <h4><a href="https://mail.google.com/mail/?view=cm&fs=1&to=zorpido@gmail.com"
+                           class="text-decoration-none" target="_blank">Email Us</a></h4>
+                    <a href="mailto:zorpido@gmail.com" class="text-decoration-none">zorpido@gmail.com</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+                <div class="card zorpido-info-card">
+                    <div class="card-body p-4">
+                        <h3 class="zorpido-card-title">
+                            <i class="bi bi-clock-fill"></i>
+                            <span>Business Hours</span>
+                        </h3>
+                        <div class="zorpido-hours-list">
+                            <div class="zorpido-hours-item">
+                                <span class="zorpido-hours-day">Sunday - Friday</span>
+                                <span class="zorpido-hours-time">8:00 AM - 8:00 PM</span>
+                            </div>
+                            <div class="zorpido-hours-item">
+                                <span class="zorpido-hours-day">Saturday</span>
+                                <span class="zorpido-hours-closed">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Closed
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card zorpido-info-card">
+                    <div class="card-body p-4">
+                        <h3 class="zorpido-card-title">
+                            <i class="bi bi-share-fill"></i>
+                            <span>Connect With Us</span>
+                        </h3>
+                        <div class="zorpido-social-links">
+                            <a href="https://x.com/ZorpidoCafe" class="zorpido-social-link" aria-label="Twitter" target="_blank">
+                                <i class="bi bi-twitter-x"></i>
+                            </a>
+                            <a href="https://www.instagram.com/zorpidocafe/" class="zorpido-social-link" aria-label="Instagram" target="_blank">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/santosh-shrestha-861120221" class="zorpido-social-link" aria-label="LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zorpido-trust-section">
+            <div class="row">
+                <div class="col-md-4 zorpido-trust-badge">
+                    <div class="zorpido-trust-icon">
+                        <i class="bi bi-shield-fill-check"></i>
+                    </div>
+                    <h4 class="zorpido-trust-title">Secure & Private</h4>
+                    <p class="zorpido-trust-text">Your information is safe with us</p>
+                </div>
+                <div class="col-md-4 zorpido-trust-badge">
+                    <div class="zorpido-trust-icon">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h4 class="zorpido-trust-title">Quick Response</h4>
+                    <p class="zorpido-trust-text">We reply within 24 hours</p>
+                </div>
+                <div class="col-md-4 zorpido-trust-badge">
+                    <div class="zorpido-trust-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h4 class="zorpido-trust-title">Friendly Support</h4>
+                    <p class="zorpido-trust-text">Real people, real solutions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'contact/js/scripts.js' %}"></script>
+
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

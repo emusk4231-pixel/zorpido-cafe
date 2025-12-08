@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}{{ request.user.first_name|default:request.user.username }}'s Dashboard | Zorpido{% endblock %}
@@ -232,4 +233,252 @@ document.getElementById('edit-profile-btn').addEventListener('click', function()
   window.location = '{% url "users:profile" %}';
 });
 </script>
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ request.user.first_name|default:request.user.username }}'s Dashboard | Zorpido{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="Manage your account, view your orders, and access exclusive features on Zorpido.">
+{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'user_dashboard/css/style.css' %}">
+<div class="dashboard-container">
+  <div class="container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h2>👋 Welcome back, {{ request.user.full_name|default:"Customer" }}!</h2>
+      <p class="mb-0" style="opacity: 0.9;">Manage your credits, loyalty points, and transactions all in one place</p>
+      <div class="mt-3">
+        <a href="{% url 'users:export_my_profile_pdf' %}" class="btn btn-outline-light" target="_blank">
+          <i class="bi bi-file-earmark-pdf"></i> Export My Profile PDF
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-lg-4">
+        <!-- Credit Balance Card -->
+        <div class="stats-card">
+          <div class="card-icon">💰</div>
+          <div class="card-title">Credit Balance</div>
+          <div class="card-value" id="credit-balance">Rs. {{ credit_balance }}</div>
+          <!-- <button id="add-credit-btn" class="btn btn-brand-primary w-100">
+            ➕ Add Deferred Credit
+          </button> -->
+        </div>
+
+        <!-- Loyalty Points Card -->
+        <div class="stats-card">
+          <div class="card-icon">⭐</div>
+          <div class="card-title">Loyalty Points</div>
+            <div class="card-value" id="loyalty-points">{{ loyalty_points }} pts</div>
+            <div class="card-subvalue text-muted" id="loyalty-earned">Earned: {{ loyalty_points_earned|default:0 }} pts (lifetime)</div>
+          <span class="loyalty-badge">🎁 1 point per Rs. 10 (Cash/QR)</span>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+          <div class="profile-image-wrapper">
+            {% load static %}
+            {% if request.user.profile_picture and request.user.profile_picture.name and 'default_profile' not in request.user.profile_picture.name %}
+              {# Append a timestamp to bust browser cache after upload/change #}
+              <img src="{{ request.user.profile_picture.url }}?v={{ request.user.updated_at.timestamp|default:0|floatformat:0 }}" alt="Profile" class="profile-image">
+            {% else %}
+              <img src="{% static 'images/default_profile.avif' %}" alt="Profile" class="profile-image">
+            {% endif %}
+            <div class="profile-badge">✓</div>
+          </div>
+          <h5 style="margin-bottom: 0.25rem;">{{ request.user.full_name }}</h5>
+          <p style="opacity: 0.9; font-size: 0.875rem; margin-bottom: 1.5rem;">{{ request.user.email }}</p>
+          <button id="edit-profile-btn" class="btn btn-brand-secondary w-100">
+            ✏️ Edit Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="col-lg-8">
+        <!-- Recent Credit Transactions -->
+        <div class="transaction-section">
+          <div class="section-header">
+            <div class="section-icon">💳</div>
+            <h5 class="section-title">Recent Credit Transactions</h5>
+          </div>
+          <div id="recent-credit-list">
+            {% for t in recent_credits %}
+              <div class="transaction-item">
+                <div class="transaction-date">{{ t.created_at }}</div>
+                <div class="transaction-type">{{ t.get_transaction_type_display }}</div>
+                <div class="transaction-amount">Rs. {{ t.amount }}</div>
+                {% if t.description %}
+                  <div style="font-size: 0.875rem; color: #6B7280; margin-top: 0.25rem;">{{ t.description }}</div>
+                {% endif %}
+              </div>
+            {% empty %}
+              <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>No credit transactions yet</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Recent Loyalty Transactions -->
+        <div class="transaction-section">
+          <div class="section-header">
+            <div class="section-icon">🎯</div>
+            <h5 class="section-title">Recent Loyalty Activity</h5>
+          </div>
+          <div id="recent-loyalty-list">
+            {% for t in recent_loyalty %}
+              <div class="transaction-item">
+                <div class="transaction-date">{{ t.created_at }}</div>
+                <div class="transaction-type">{{ t.get_transaction_type_display }}</div>
+                <div class="transaction-amount">{{ t.points }} points</div>
+                <div style="font-size: 0.875rem; color: #6B7280; margin-top: 0.25rem;">{{ t.description }}</div>
+              </div>
+            {% empty %}
+              <div class="empty-state">
+                <div class="empty-state-icon">🌟</div>
+                <p>No loyalty history yet. Start earning points with your purchases!</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Full Credit History -->
+        <!-- <div class="transaction-section">
+          <div class="section-header">
+            <div class="section-icon">📊</div>
+            <h5 class="section-title">Full Credit History</h5>
+          </div>
+          <div id="credit-history">
+            <button id="load-full-history" class="load-more-btn">
+              📜 Load Complete History
+            </button>
+            <div id="full-history-list" class="mt-3"></div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Enhanced notification system (uses ZorpidoNotify when available)
+function showNotification(text, level='info'){
+  if (window.ZorpidoNotify && typeof window.ZorpidoNotify.notify === 'function') {
+    // Map local levels to ZorpidoNotify types
+    var t = (level === 'error') ? 'error' : (level === 'success') ? 'success' : (level === 'warning') ? 'warning' : 'info';
+    window.ZorpidoNotify.notify(text, t, { timeout: 5200 });
+    return;
+  }
+
+  // Fallback: simple toast container (keeps backward compatibility)
+  var container = document.getElementById('notif-container');
+  if(!container){
+    container = document.createElement('div');
+    container.id = 'notif-container';
+    container.className = 'notification-toast';
+    document.body.appendChild(container);
+  }
+  var toastClass = 'toast-' + (level === 'error' ? 'error' : level === 'success' ? 'success' : 'info');
+  var icon = level === 'error' ? '❌' : level === 'success' ? '✅' : 'ℹ️';
+  var el = document.createElement('div');
+  el.className = 'toast-item ' + toastClass;
+  el.innerHTML = '<strong>' + icon + '</strong> ' + text;
+  container.appendChild(el);
+  setTimeout(function(){
+    el.style.opacity = '0';
+    setTimeout(function(){ el.remove(); }, 300);
+  }, 4700);
+}
+
+// Polling for balance updates every 10 seconds
+setInterval(function(){
+  fetch('{% url "users:dashboard_status" %}', {credentials: 'same-origin'})
+    .then(r => r.json())
+    .then(data => {
+      var creditEl = document.getElementById('credit-balance');
+      if (creditEl) creditEl.textContent = 'Rs. ' + data.credit_balance;
+      var lp = document.getElementById('loyalty-points');
+      if (lp && data.loyalty_points !== undefined) lp.textContent = data.loyalty_points + ' pts';
+      var lpe = document.getElementById('loyalty-earned');
+      if (lpe && data.loyalty_points_earned !== undefined) lpe.textContent = 'Earned: ' + data.loyalty_points_earned + ' pts (lifetime)';
+    }).catch(e => console.error(e));
+}, 10000);
+
+// Add deferred credit flow
+var addCreditBtn = document.getElementById('add-credit-btn');
+if (addCreditBtn) addCreditBtn.addEventListener('click', function(){
+  var amt = prompt('Enter amount to add as deferred credit (NPR):');
+  if(!amt) return;
+  
+  fetch('{% url "users:dashboard_add_credit" %}', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+    body: JSON.stringify({amount: amt, note: 'Customer requested via dashboard'})
+  }).then(r=>r.json()).then(data=>{
+    if(data.success){
+      document.getElementById('credit-balance').textContent = 'Rs. ' + data.new_balance;
+      showNotification('Deferred credit added successfully! New balance: Rs. ' + data.new_balance, 'success');
+    } else {
+      showNotification(data.error || 'Failed to add credit', 'error');
+    }
+  }).catch(e=>{showNotification('Network error occurred', 'error');});
+});
+
+// Load full history
+var loadFullBtn = document.getElementById('load-full-history');
+if (loadFullBtn) loadFullBtn.addEventListener('click', function(){
+  var btn = this;
+  btn.disabled = true;
+  btn.textContent = '⏳ Loading...';
+  
+  fetch('{% url "users:dashboard_credit_history" %}', {credentials: 'same-origin'})
+    .then(r=>r.json()).then(data=>{
+      btn.disabled = false;
+      btn.textContent = '📜 Load Complete History';
+      
+      if(!data.success){ 
+        showNotification(data.error || 'Failed to load history', 'error'); 
+        return; 
+      }
+      
+      var list = document.getElementById('full-history-list');
+      list.innerHTML = '';
+      
+      if(data.transactions.length === 0){
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No transaction history available</p></div>';
+        return;
+      }
+      
+      data.transactions.forEach(function(t){
+        var item = document.createElement('div');
+        item.className = 'transaction-item';
+        item.innerHTML = '<div class="transaction-date">' + t.created_at + '</div>' +
+                        '<div class="transaction-type">' + t.source.toUpperCase() + ' ' + (t.action || '') + '</div>' +
+                        '<div class="transaction-amount">Rs. ' + t.amount + '</div>' +
+                        (t.note ? '<div style="font-size: 0.875rem; color: #6B7280; margin-top: 0.25rem;">' + t.note + '</div>' : '');
+        list.appendChild(item);
+      });
+      
+      btn.style.display = 'none';
+    }).catch(e=>{ 
+      btn.disabled = false;
+      btn.textContent = '📜 Load Complete History';
+      showNotification('Failed to load history', 'error'); 
+    });
+});
+
+// Edit profile
+document.getElementById('edit-profile-btn').addEventListener('click', function(){
+  window.location = '{% url "users:profile" %}';
+});
+</script>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

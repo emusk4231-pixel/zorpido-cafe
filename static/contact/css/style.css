@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
     --zorpido-red: #ff0000;
     --zorpido-red-dark: #cc0000;
@@ -605,3 +606,612 @@
         font-size: 1.25rem;
     }
 }
+=======
+:root {
+    --zorpido-red: #ff0000;
+    --zorpido-red-dark: #cc0000;
+    --zorpido-red-light: #ff4444;
+    --zorpido-yellow: #ffd700;
+    --zorpido-yellow-light: #fffaeb;
+    --zorpido-white: #ffffff;
+    --zorpido-gray-light: #f8f9fa;
+    --zorpido-gray: #6c757d;
+    --zorpido-shadow: 0 10px 40px rgba(255, 0, 0, 0.1);
+    --zorpido-shadow-lg: 0 20px 60px rgba(255, 0, 0, 0.15);
+}
+
+/* Page Container */
+.zorpido-contact-page {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FEF3C7 30%, #FFFFFF 70%, #FEF3C7 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Floating Background Elements */
+.zorpido-floating-shape {
+    position: absolute;
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.zorpido-shape-1 {
+    top: 10%;
+    left: 5%;
+    font-size: 120px;
+    color: var(--zorpido-red);
+    animation: float 8s ease-in-out infinite;
+}
+
+.zorpido-shape-2 {
+    bottom: 15%;
+    right: 8%;
+    font-size: 150px;
+    color: var(--zorpido-yellow);
+    animation: float 10s ease-in-out infinite 2s;
+}
+
+.zorpido-shape-3 {
+    top: 50%;
+    right: 15%;
+    font-size: 100px;
+    color: var(--zorpido-red-light);
+    animation: float 12s ease-in-out infinite 4s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-40px) rotate(15deg);
+    }
+}
+
+/* Hero Section */
+.zorpido-contact-hero {
+    background: linear-gradient(135deg, var(--zorpido-red) 0%, var(--zorpido-red-light) 100%);
+    color: var(--zorpido-white);
+    padding: 4rem 0;
+    margin: -1rem -1rem 0 -1rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 3rem 3rem;
+}
+
+.zorpido-contact-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.zorpido-contact-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 5s ease-in-out infinite 1s;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+.zorpido-hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    position: relative;
+    z-index: 2;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.zorpido-hero-subtitle {
+    font-size: 1.3rem;
+    position: relative;
+    z-index: 2;
+    opacity: 0.95;
+    animation: fadeInDown 0.8s ease-out 0.2s backwards;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Contact Form Card */
+.zorpido-contact-form-card {
+    background: var(--zorpido-white);
+    border-radius: 2rem;
+    box-shadow: var(--zorpido-shadow-lg);
+    overflow: hidden;
+    animation: slideInLeft 0.8s ease-out;
+    border: none;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.zorpido-form-header {
+    border-bottom: 3px solid var(--zorpido-gray-light);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.zorpido-form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--zorpido-red);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.zorpido-form-title i {
+    font-size: 2rem;
+}
+
+/* Form Controls */
+.zorpido-form-group {
+    margin-bottom: 1.75rem;
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.zorpido-form-group:nth-child(1) { animation-delay: 0.1s; }
+.zorpido-form-group:nth-child(2) { animation-delay: 0.2s; }
+.zorpido-form-group:nth-child(3) { animation-delay: 0.3s; }
+.zorpido-form-group:nth-child(4) { animation-delay: 0.4s; }
+.zorpido-form-group:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.zorpido-form-label {
+    font-weight: 600;
+    color: var(--zorpido-gray);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.zorpido-form-label i {
+    color: var(--zorpido-red);
+    font-size: 1.1rem;
+}
+
+.zorpido-form-label .required-star {
+    color: var(--zorpido-red);
+    font-weight: 700;
+    margin-left: 0.25rem;
+}
+
+.zorpido-form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    background: var(--zorpido-white);
+}
+
+.zorpido-form-control:focus {
+    border-color: var(--zorpido-red);
+    box-shadow: 0 0 0 0.25rem rgba(255, 0, 0, 0.1);
+    background: var(--zorpido-white);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.zorpido-form-control:hover {
+    border-color: var(--zorpido-red-light);
+}
+
+.zorpido-form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Submit Button */
+.zorpido-btn-submit {
+    background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-red-light));
+    color: var(--zorpido-white);
+    border: none;
+    padding: 1.125rem 3.5rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out 0.6s backwards;
+}
+
+.zorpido-btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.zorpido-btn-submit:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.zorpido-btn-submit:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 0, 0, 0.5);
+    color: var(--zorpido-white);
+}
+
+.zorpido-btn-submit i,
+.zorpido-btn-submit span {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Sidebar Cards */
+.zorpido-sidebar {
+    animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.zorpido-info-card {
+    background: rgba(220, 38, 38, 0.4);
+    border-radius: 1.5rem;
+    box-shadow: var(--zorpido-shadow);
+    border: none;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.6s ease-out backwards;
+}
+
+.zorpido-info-card:nth-child(1) { animation-delay: 0.2s; }
+.zorpido-info-card:nth-child(2) { animation-delay: 0.4s; }
+.zorpido-info-card:nth-child(3) { animation-delay: 0.6s; }
+
+.zorpido-info-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--zorpido-shadow-lg);
+}
+
+.zorpido-card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--zorpido-red);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.zorpido-card-title i {
+    font-size: 1.5rem;
+}
+
+/* Contact Items */
+.zorpido-contact-item {
+    padding: 1.25rem 0;
+    border-bottom: 2px solid var(--zorpido-gray-light);
+    transition: all 0.3s ease;
+}
+
+.zorpido-contact-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.zorpido-contact-item:hover {
+    transform: translateX(5px);
+}
+
+.zorpido-contact-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-red-light));
+    color: var(--zorpido-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.zorpido-contact-item:hover .zorpido-contact-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.zorpido-contact-item h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--zorpido-white);
+    margin-bottom: 0.5rem;
+}
+
+.zorpido-contact-item p {
+    color: var(--zorpido-white);
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+.zorpido-contact-item a {
+    color: var(--zorpido-white);
+    margin-bottom: 0;
+    transition: color 0.3s ease;
+}
+
+.zorpido-contact-item a:hover {
+    color: var(--zorpido-white);
+}
+
+/* Business Hours */
+.zorpido-hours-list {
+    background: linear-gradient(135deg, var(--zorpido-yellow-light), #fff5f5);
+    border-radius: 1rem;
+    padding: 1.25rem;
+}
+
+.zorpido-hours-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.1);
+}
+
+.zorpido-hours-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.zorpido-hours-day {
+    color: var(--zorpido-gray);
+    font-weight: 500;
+}
+
+.zorpido-hours-time {
+    font-weight: 700;
+    color: var(--zorpido-red);
+}
+
+.zorpido-hours-closed {
+    font-weight: 700;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Social Links */
+.zorpido-social-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.zorpido-social-link {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--zorpido-gray-light), var(--zorpido-white));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--zorpido-red);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.zorpido-social-link:hover {
+    background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-red-light));
+    color: var(--zorpido-white);
+    transform: translateY(-5px) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
+}
+
+/* Trust Badges */
+.zorpido-trust-section {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 3px solid var(--zorpido-gray-light);
+}
+
+.zorpido-trust-badge {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    animation: fadeInUp 0.8s ease-out backwards;
+}
+
+.zorpido-trust-badge:nth-child(1) { animation-delay: 0.2s; }
+.zorpido-trust-badge:nth-child(2) { animation-delay: 0.4s; }
+.zorpido-trust-badge:nth-child(3) { animation-delay: 0.6s; }
+
+.zorpido-trust-badge:hover {
+    transform: scale(1.08);
+}
+
+.zorpido-trust-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--zorpido-yellow-light), #fff5f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--zorpido-red);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.zorpido-trust-badge:hover .zorpido-trust-icon {
+    background: linear-gradient(135deg, var(--zorpido-red), var(--zorpido-red-light));
+    color: var(--zorpido-white);
+    transform: rotate(360deg);
+}
+
+.zorpido-trust-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--zorpido-red);
+    margin-bottom: 0.75rem;
+}
+
+.zorpido-trust-text {
+    color: var(--zorpido-gray);
+    font-size: 0.95rem;
+}
+
+/* Error Messages */
+.zorpido-error {
+    color: var(--zorpido-red);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .zorpido-contact-hero {
+        margin: 0;
+        border-radius: 2rem;
+        padding: 3rem 0;
+    }
+
+    .zorpido-hero-title {
+        font-size: 2.5rem;
+    }
+
+    .zorpido-sidebar {
+        animation: fadeIn 0.8s ease-out;
+    }
+}
+
+@media (max-width: 768px) {
+    .zorpido-hero-title {
+        font-size: 2rem;
+    }
+
+    .zorpido-hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .zorpido-contact-form-card,
+    .zorpido-info-card {
+        border-radius: 1.5rem;
+    }
+
+    .zorpido-btn-submit {
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+
+    .zorpido-trust-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .zorpido-form-title {
+        font-size: 1.5rem;
+    }
+
+    .zorpido-contact-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+
+    .zorpido-social-link {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164

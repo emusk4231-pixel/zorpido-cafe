@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Create Seller | Zorpido{% endblock %}
@@ -82,4 +83,90 @@
     </div>
   </div>
 </div>
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Seller | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Create and manage seller profiles in the Zorpido POS system. Ensure accurate information and smooth operations for your sales team.">
+{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'create_seller/css/style.css' %}">
+<div class="create-container">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h2><i class="bi bi-person-plus-fill"></i> Create New Seller</h2>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <div class="form-header">
+        <div class="form-header-icon">👤</div>
+        <h3>Seller Information</h3>
+        <p>Enter the details for the new seller</p>
+      </div>
+
+      <form method="post" action="{% url 'pos:seller_create' %}">
+        {% csrf_token %}
+        
+        <div class="form-group-custom">
+          <label class="form-label-custom">
+            <span class="form-label-icon">📝</span>
+            Seller Name
+            <span class="required-indicator">*</span>
+          </label>
+          <input class="form-control-custom" 
+                 name="name" 
+                 type="text"
+                 placeholder="Enter seller's full name" 
+                 required />
+        </div>
+
+        <div class="form-group-custom">
+          <label class="form-label-custom">
+            <span class="form-label-icon">📞</span>
+            Contact Number
+          </label>
+          <input class="form-control-custom" 
+                 name="contact" 
+                 type="tel"
+                 placeholder="Enter phone number (optional)" />
+        </div>
+
+        <div class="form-group-custom">
+          <label class="form-label-custom">
+            <span class="form-label-icon">✉️</span>
+            Email Address
+          </label>
+          <input class="form-control-custom" 
+                 name="email" 
+                 type="email"
+                 placeholder="Enter email address (optional)" />
+        </div>
+
+        <div class="form-group-custom">
+          <label class="form-label-custom">
+            <span class="form-label-icon">📋</span>
+            Notes
+          </label>
+          <textarea class="form-control-custom" 
+                    name="notes"
+                    placeholder="Add any additional notes about this seller (optional)"></textarea>
+        </div>
+
+        <div class="btn-group-custom">
+          <a href="{% url 'pos:seller_list' %}" class="btn-cancel">
+            <i class="bi bi-x-circle"></i> Cancel
+          </a>
+          <button type="submit" class="btn-submit">
+            <i class="bi bi-check-circle"></i> Create Seller
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

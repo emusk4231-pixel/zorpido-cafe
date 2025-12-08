@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 
 {% block content %}
@@ -11,3 +12,18 @@
   </form>
 </div>
 {% endblock %}
+=======
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Adjust Credit for {{ customer.email }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Apply</button>
+    <a href="{% url 'users:staff_customer_edit' customer.pk %}" class="btn btn-secondary">Back</a>
+  </form>
+</div>
+{% endblock %}
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164

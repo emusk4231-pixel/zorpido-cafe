@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- ============================================
      MY ORDERS PAGE (orders.html)
 ============================================ -->
@@ -55,4 +56,63 @@
         </div>
     </div>
 </div>
+=======
+<!-- ============================================
+     MY ORDERS PAGE (orders.html)
+============================================ -->
+{% extends 'base.html' %}
+{% block title %}{{ request.user.first_name|default:request.user.username }}’s Orders | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="{{ request.user.first_name|default:request.user.username }}’s order history at Zorpido. View your past orders, track deliveries, and manage your purchases.">
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'orders/css/style.css' %}">
+<div class="orders-container">
+    <div class="container">
+        <div class="orders-header">
+            <i class="bi bi-bag-check-fill" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <h2 class="fw-bold mb-1">My Orders</h2>
+            <p class="mb-0 opacity-90">Track your order history</p>
+        </div>
+        
+        <div class="orders-card">
+            <div class="table-responsive p-3">
+                <table class="table table-modern">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td><strong class="text-primary">{{ order.order_number }}</strong></td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                            <td><span class="badge bg-secondary">{{ order.items.count }} items</span></td>
+                            <td><strong style="color: #ff0000;">NPR {{ order.total }}</strong></td>
+                            <td><span class="badge bg-success">{{ order.get_status_display }}</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-orders">
+                                    <i class="bi bi-inbox"></i>
+                                    <h5 class="text-muted">No orders yet</h5>
+                                    <p class="text-muted">Your orders will appear here once you make a purchase</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

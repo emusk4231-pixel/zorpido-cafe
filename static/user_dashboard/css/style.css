@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
   --primary-red: #DC2626;
   --secondary-red: #EF4444;
@@ -321,3 +322,328 @@
     padding: 1rem;
   }
 }
+=======
+:root {
+  --primary-red: #DC2626;
+  --secondary-red: #EF4444;
+  --accent-yellow: #FBBF24;
+  --light-yellow: #FEF3C7;
+  --dark-red: #991B1B;
+}
+
+.dashboard-container {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.stats-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-red), var(--accent-yellow));
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(220, 38, 38, 0.15);
+  border-color: var(--accent-yellow);
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--light-yellow), var(--accent-yellow));
+}
+
+.card-title {
+  font-size: 0.875rem;
+  color: #6B7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-red);
+  margin-bottom: 1rem;
+}
+
+.btn-brand-primary {
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+}
+
+.btn-brand-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  background: linear-gradient(135deg, var(--dark-red), var(--primary-red));
+  color: white;
+}
+
+.btn-brand-secondary {
+  background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+  border: none;
+  color: var(--dark-red);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+}
+
+.btn-brand-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+  color: var(--dark-red);
+}
+
+.profile-card {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+}
+
+.profile-image-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--accent-yellow);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--accent-yellow);
+  color: var(--dark-red);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: 3px solid var(--primary-red);
+}
+
+.transaction-section {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--light-yellow);
+}
+
+.section-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--light-yellow), var(--accent-yellow));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dark-red);
+  margin: 0;
+}
+
+.transaction-item {
+  background: #F9FAFB;
+  border-left: 4px solid var(--accent-yellow);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.transaction-item:hover {
+  background: var(--light-yellow);
+  transform: translateX(5px);
+}
+
+.transaction-date {
+  font-size: 0.75rem;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+.transaction-type {
+  font-weight: 600;
+  color: var(--primary-red);
+  margin: 0.25rem 0;
+}
+
+.transaction-amount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--dark-red);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #9CA3AF;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.load-more-btn {
+  background: white;
+  border: 2px solid var(--accent-yellow);
+  color: var(--primary-red);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.load-more-btn:hover {
+  background: var(--light-yellow);
+  border-color: var(--primary-red);
+  color: var(--dark-red);
+}
+
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.toast-item {
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-success {
+  border-left-color: #10B981;
+}
+
+.toast-error {
+  border-left-color: var(--primary-red);
+}
+
+.toast-info {
+  border-left-color: var(--accent-yellow);
+}
+
+.loyalty-badge {
+  background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+  color: var(--dark-red);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card-value {
+    font-size: 1.5rem;
+  }
+  
+  .stats-card {
+    padding: 1rem;
+  }
+}
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164

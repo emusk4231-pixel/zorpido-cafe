@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Customer Credit Management | Zorpido{% endblock %}
@@ -195,4 +196,203 @@
 </div>
 
 <script src="{% static 'credit_management_pos/js/scripts.js' %}"></script>
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Customer Credit Management | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Manage customer credit at Zorpido. View credit limits, outstanding balances, and transaction history to ensure a seamless dining experience for your guests.">
+{% endblock %}
+
+
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'credit_management_pos/css/style.css' %}">
+
+<div class="container py-4">
+    <div class="credit-header">
+        <h2>
+            <span>💳</span>
+            Customer Credit Management
+        </h2>
+        <p>Track and manage customer credit balances with ease</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Total Outstanding</div>
+            <div class="stat-value">NPR {{ total_credit }}</div>
+            <div class="stat-subtext">Across all customers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Active Customers</div>
+            <div class="stat-value">{{ customers|length }}</div>
+            <div class="stat-subtext">With credit accounts</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-label">Avg. Balance</div>
+            <div class="stat-value">NPR {{ avg_credit|default:"0" }}</div>
+            <div class="stat-subtext">Per customer</div>
+        </div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="filter-section">
+        <h5>🔍 Filter Transactions</h5>
+        <div class="row align-items-end g-3">
+            <div class="col-md-4">
+                <label for="fromDate" class="filter-label">
+                    <span>📅</span> From Date
+                </label>
+                <input type="date" id="fromDate" class="form-control form-control-enhanced" placeholder="Select start date" />
+            </div>
+            <div class="col-md-4">
+                <label for="toDate" class="filter-label">
+                    <span>📅</span> To Date
+                </label>
+                <input type="date" id="toDate" class="form-control form-control-enhanced" placeholder="Select end date" />
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-filter w-100" id="filterBtn">
+                    <span>🔎</span> Apply Filter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit Table -->
+    <div class="credit-table-card">
+        <div class="table-header-section">
+            <h4>
+                <span>📋</span>
+                Customer Credit Accounts
+            </h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-modern">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Customer</th>
+                        <th>Contact Info</th>
+                        <th>Phone</th>
+                        <th>Credit Balance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td><strong>{{ forloop.counter }}</strong></td>
+                        <td>
+                            <div class="customer-name">{{ customer.full_name }}</div>
+                        </td>
+                        <td>
+                            <div class="customer-email">{{ customer.email }}</div>
+                        </td>
+                        <td>
+                            <div class="customer-phone">{{ customer.phone|default:"Not provided" }}</div>
+                        </td>
+                        <td>
+                            <span class="credit-balance-wrapper {% if customer.credit_balance > 0 %}positive{% elif customer.credit_balance < 0 %}negative{% else %}zero{% endif %}">
+                                {% if customer.credit_balance > 0 %}
+                                    ✓ NPR {{ customer.credit_balance }}
+                                {% elif customer.credit_balance < 0 %}
+                                    ⚠ NPR {{ customer.credit_balance }}
+                                {% else %}
+                                    — NPR 0.00
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-btn-group">
+                                <button class="btn-action btn-add credit-action-btn" 
+                                        data-customer-id="{{ customer.id }}" 
+                                        data-customer-name="{{ customer.full_name|escapejs }}" 
+                                        data-action="add">
+                                    <span>➕</span> Add Credit
+                                </button>
+                                <button class="btn-action btn-deduct credit-action-btn" 
+                                        data-customer-id="{{ customer.id }}" 
+                                        data-customer-name="{{ customer.full_name|escapejs }}" 
+                                        data-action="deduct">
+                                    <span>➖</span> Deduct
+                                </button>
+                                <button class="btn-action btn-history view-history-btn" 
+                                        data-customer-id="{{ customer.id }}" 
+                                        data-customer-name="{{ customer.full_name|escapejs }}">
+                                    <span>📜</span> History
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">👥</div>
+                                <h4>No Customers Found</h4>
+                                <p>Start adding customers to manage their credit accounts</p>
+                                <small>Customers will appear here once they are registered in the system</small>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Credit Modal -->
+<div class="modal fade modal-enhanced" id="creditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="creditForm">
+                <div class="modal-header" id="creditModalHeader">
+                    <h5 class="modal-title" id="creditModalTitle">Adjust Credit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="creditCustomerId" name="customer_id" />
+                    <input type="hidden" id="creditAction" name="action" />
+                    <div class="mb-4">
+                        <label for="creditAmount" class="filter-label">
+                            <span>💵</span> Amount (NPR)
+                        </label>
+                        <input type="number" step="0.01" class="form-control form-control-enhanced" 
+                               id="creditAmount" name="amount" required 
+                               placeholder="Enter amount to adjust" />
+                    </div>
+                    <div class="alert alert-info" style="border-radius: 0.75rem; border: 2px solid #BFDBFE; background: #DBEAFE;">
+                        <strong>ℹ️ Note:</strong> This action will be recorded in the customer's transaction history.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 0.625rem; padding: 0.625rem 1.5rem;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="creditSubmitBtn" style="border-radius: 0.625rem; padding: 0.625rem 1.5rem; background: var(--zorpido-red); border: none;">
+                        <span>✓</span> Confirm & Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal fade modal-enhanced" id="creditHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div id="creditHistoryModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'credit_management_pos/js/scripts.js' %}"></script>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

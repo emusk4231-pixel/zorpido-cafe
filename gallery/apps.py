@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 # gallery/apps.py
 from django.apps import AppConfig
 
 class GalleryConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'gallery'
+=======
+# gallery/apps.py
+from django.apps import AppConfig
+
+class GalleryConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'gallery'
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
     verbose_name = 'Gallery Management'

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Active Orders | Zorpido{% endblock %}
@@ -104,4 +105,112 @@
 
 <script src="{% static 'active_orders_pos/js/scripts.js' %}"></script>
 
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Active Orders | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="View and manage all active orders created in the Zorpido POS system. Access order details, take payments, and delete orders as needed.">
+{% endblock %}
+
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'active_orders_pos/css/style.css' %}">
+
+
+<div class="container py-4">
+  <div class="orders-header">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <h2>Active Orders</h2>
+      <a href="{% url 'pos:dashboard' %}" class="btn-back">
+        <span>←</span> Back to POS
+      </a>
+    </div>
+  </div>
+
+  <div class="orders-stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value">{{ orders|length }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Value</div>
+      <div class="stat-value">NPR {% widthratio orders|length 1 1500 %}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Payment</div>
+      <div class="stat-value">{{ orders|length }}</div>
+    </div>
+  </div>
+
+  <div class="orders-table-container">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Order Number</th>
+          <th>Customer</th>
+          <th>Items</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><strong>{{ forloop.counter }}</strong></td>
+          <td>
+            <a href="{% url 'pos:order_detail' order.id %}" class="order-number">
+              {{ order.order_number }}
+            </a>
+          </td>
+          <td>
+            {% if order.customer %}
+              <span class="customer-name">{{ order.customer.full_name }}</span>
+            {% else %}
+              <span class="customer-walkin">Walk-in Customer</span>
+            {% endif %}
+          </td>
+          <td><strong>{{ order.items.count }}</strong> items</td>
+          <td><span class="order-total">NPR {{ order.total }}</span></td>
+          <td>
+            <span class="badge-status badge-pending">{{ order.status }}</span>
+          </td>
+          <td><span class="order-date">{{ order.created_at|date:'M d, Y - H:i' }}</span></td>
+          <td>
+            <div class="action-buttons">
+              <a href="{% url 'pos:order_detail' order.id %}" class="btn-action btn-open">
+                👁️ Open
+              </a>
+              <button class="btn-action btn-payment complete-now" data-id="{{ order.id }}">
+                💳 Payment
+              </button>
+              <button class="btn-action btn-delete delete-order" data-id="{{ order.id }}">
+                🗑️ Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <h3>No Active Orders</h3>
+              <p>Create a new order from the POS dashboard to get started.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="{% static 'active_orders_pos/js/scripts.js' %}"></script>
+
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

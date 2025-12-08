@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 {%load static %}
 <html lang="en">
@@ -645,4 +646,653 @@
         });
     </script>
 </body>
+=======
+<!DOCTYPE html>
+{%load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zorpido Customer Journey | Animated Story</title>
+    {% block meta_description %}
+    <!-- Meta Description -->
+    <meta name="description" content="see Demo of Zorpido customer journey workflow animation video. Explore how our seamless process ensures a delightful dining experience from entry to exit.">
+    {% endblock %}
+        <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a0000;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1500px;
+        }
+
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.85) translateZ(-200px);
+            transition: all 1.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+            filter: blur(10px);
+        }
+
+        .scene.active {
+            opacity: 1;
+            transform: scale(1) translateZ(0);
+            z-index: 10;
+            filter: blur(0);
+        }
+
+        .scene.exit {
+            opacity: 0;
+            transform: scale(1.15) translateZ(200px);
+            filter: blur(10px);
+        }
+
+        .scene-content {
+            text-align: center;
+            max-width: 900px;
+            padding: 40px;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
+        }
+
+        .scene.active .scene-content {
+            transform: translateY(0);
+        }
+
+        .scene-icon {
+            font-size: 10em;
+            margin-bottom: 40px;
+            animation: iconFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 25px 50px rgba(0,0,0,0.6));
+            display: inline-block;
+        }
+
+        .scene-title {
+            font-size: 4em;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            animation: titlePulse 3s ease-in-out infinite;
+            letter-spacing: 1px;
+        }
+
+        .scene-description {
+            font-size: 1.6em;
+            line-height: 1.9;
+            opacity: 0.95;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Enhanced brand color gradients */
+        .scene-1 { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); }
+        .scene-2 { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); }
+        .scene-3 { background: linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #fde68a 100%); color: #1a0000; }
+        .scene-4 { background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%); }
+        .scene-5 { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%); color: #1a0000; }
+        .scene-6 { background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 50%, #450a0a 100%); }
+        .scene-7 { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #dc2626 100%); }
+        .scene-8 { background: linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #fbbf24 100%); color: #1a0000; }
+        .scene-9 { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #fbbf24 100%); }
+        .scene-10 { background: linear-gradient(135deg, #fbbf24 0%, #fde68a 50%, #ffffff 100%); color: #1a0000; }
+
+        /* Enhanced particle effects */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleRise 6s ease-in-out infinite;
+        }
+
+        /* Animated background elements */
+        .scene::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        /* Progress indicator with brand colors */
+        .progress-container {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 18px;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(220,38,38,0.4), rgba(153,27,27,0.4));
+            padding: 25px 40px;
+            border-radius: 60px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(251,191,36,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .progress-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-dot::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: scale(1);
+        }
+
+        .progress-dot.active {
+            background: #fbbf24;
+            transform: scale(1.6);
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.9), 0 0 50px rgba(251, 191, 36, 0.5);
+        }
+
+        .progress-dot.active::after {
+            animation: ripple 2s ease-out infinite;
+        }
+
+        .progress-dot.completed {
+            background: #dc2626;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+        }
+
+        /* Enhanced control panel */
+        .control-panel {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid rgba(251,191,36,0.4);
+            background: linear-gradient(135deg, rgba(220,38,38,0.3), rgba(153,27,27,0.3));
+            backdrop-filter: blur(15px);
+            color: white;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, rgba(251,191,36,0.5), rgba(245,158,11,0.5));
+            transform: scale(1.15) rotate(5deg);
+            border-color: rgba(251,191,36,0.8);
+            box-shadow: 0 12px 40px rgba(251,191,36,0.4);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Enhanced step counter */
+        .step-counter {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(220,38,38,0.3), rgba(153,27,27,0.3));
+            padding: 20px 35px;
+            border-radius: 40px;
+            backdrop-filter: blur(15px);
+            font-size: 1.5em;
+            font-weight: 700;
+            border: 3px solid rgba(251,191,36,0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+        }
+
+        /* Transition overlay */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(220,38,38,0.9), rgba(153,27,27,0.95));
+            z-index: 150;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .transition-overlay.active {
+            animation: smoothFade 1s ease-in-out;
+        }
+
+        /* Enhanced loading */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 1;
+            transition: opacity 1.5s ease;
+        }
+
+        .loading.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 100px;
+            height: 100px;
+            border: 10px solid rgba(251, 191, 36, 0.2);
+            border-top-color: #fbbf24;
+            border-radius: 50%;
+            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            box-shadow: 0 0 50px rgba(251,191,36,0.4);
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #fbbf24;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Animations */
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+            50% { text-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 60px rgba(255,255,255,0.3); }
+        }
+
+        @keyframes particleRise {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) translateX(150px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes ripple {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(2.5);
+            }
+        }
+
+        @keyframes smoothFade {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .scene-icon { font-size: 7em; }
+            .scene-title { font-size: 2.8em; }
+            .scene-description { font-size: 1.3em; }
+            .control-panel { top: 25px; right: 25px; gap: 15px; }
+            .control-btn { width: 55px; height: 55px; font-size: 1.5em; }
+            .step-counter { top: 25px; left: 25px; font-size: 1.2em; padding: 15px 25px; }
+            .progress-container { bottom: 30px; padding: 20px 30px; gap: 12px; }
+            .progress-dot { width: 12px; height: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Zorpido Experience...</div>
+    </div>
+
+    <div class="transition-overlay" id="transitionOverlay"></div>
+
+    <div class="step-counter" id="stepCounter">Step 1 / 10</div>
+
+    <div class="control-panel">
+        <button class="control-btn" id="playPauseBtn" title="Play/Pause">▶</button>
+        <button class="control-btn" id="restartBtn" title="Restart">↻</button>
+    </div>
+
+    <div class="progress-container" id="progressContainer"></div>
+
+<div class="video-container" id="videoContainer">
+    <div class="scene scene-1 active" data-scene="1">
+        <div class="particles" id="particles-1"></div>
+        <div class="scene-content">
+            <div class="scene-icon">🚪</div>
+            <h2 class="scene-title">You Walk In</h2>
+            <p class="scene-description">Step inside Zorpido and feel the warm, cozy vibe right away.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-2" data-scene="2">
+        <div class="particles" id="particles-2"></div>
+        <div class="scene-content">
+            <div class="scene-icon">🪑</div>
+            <h2 class="scene-title">Find a Seat</h2>
+            <p class="scene-description">Pick a comfortable spot and settle in for a relaxing time.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-3" data-scene="3">
+        <div class="particles" id="particles-3"></div>
+        <div class="scene-content">
+            <div class="scene-icon">📋</div>
+            <h2 class="scene-title">Browse the Menu</h2>
+            <p class="scene-description">Look through our menu and find what you’d like to enjoy.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-4" data-scene="4">
+        <div class="particles" id="particles-4"></div>
+        <div class="scene-content">
+            <div class="scene-icon">✍️</div>
+            <h2 class="scene-title">Place Your Order</h2>
+            <p class="scene-description">A friendly staff member takes your order with a smile.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-5" data-scene="5">
+        <div class="particles" id="particles-5"></div>
+        <div class="scene-content">
+            <div class="scene-icon">🔔</div>
+            <h2 class="scene-title">Order Reaches the Kitchen</h2>
+            <p class="scene-description">The kitchen gets your order instantly and starts preparing it.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-6" data-scene="6">
+        <div class="particles" id="particles-6"></div>
+        <div class="scene-content">
+            <div class="scene-icon">👨‍🍳</div>
+            <h2 class="scene-title">Meal is Prepared</h2>
+            <p class="scene-description">The chef carefully makes your dish, fresh and ready to enjoy.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-7" data-scene="7">
+        <div class="particles" id="particles-7"></div>
+        <div class="scene-content">
+            <div class="scene-icon">🍽️</div>
+            <h2 class="scene-title">Dish is Ready</h2>
+            <p class="scene-description">Your meal is plated beautifully and ready for you.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-8" data-scene="8">
+        <div class="particles" id="particles-8"></div>
+        <div class="scene-content">
+            <div class="scene-icon">🤝</div>
+            <h2 class="scene-title">Food is Served</h2>
+            <p class="scene-description">Your dish is brought to your table with care and a smile.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-9" data-scene="9">
+        <div class="particles" id="particles-9"></div>
+        <div class="scene-content">
+            <div class="scene-icon">😋</div>
+            <h2 class="scene-title">Enjoy Your Meal</h2>
+            <p class="scene-description">Take a bite and savor the flavors — simple, tasty, and satisfying.</p>
+        </div>
+    </div>
+
+    <div class="scene scene-10" data-scene="10">
+        <div class="particles" id="particles-10"></div>
+        <div class="scene-content">
+            <div class="scene-icon">💳</div>
+            <h2 class="scene-title">Checkout</h2>
+            <p class="scene-description">Pay easily with cash or digital wallet, and leave happy.</p>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        let currentScene = 1;
+        const totalScenes = 10;
+        let isPlaying = false;
+        let playInterval;
+        const sceneDuration = 7000; // 7 seconds
+
+        const scenes = document.querySelectorAll('.scene');
+        const progressContainer = document.getElementById('progressContainer');
+        const stepCounter = document.getElementById('stepCounter');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const transitionOverlay = document.getElementById('transitionOverlay');
+        const loading = document.getElementById('loading');
+
+        // Create progress dots
+        for (let i = 1; i <= totalScenes; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot';
+            if (i === 1) dot.classList.add('active');
+            dot.addEventListener('click', () => goToScene(i));
+            progressContainer.appendChild(dot);
+        }
+
+        // Create enhanced particles
+        function createParticles(sceneNum) {
+            const container = document.getElementById(`particles-${sceneNum}`);
+            if (!container) return;
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 8 + 4) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        for (let i = 1; i <= totalScenes; i++) {
+            createParticles(i);
+        }
+
+        function updateProgressDots() {
+            const dots = progressContainer.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index + 1 < currentScene) {
+                    dot.classList.add('completed');
+                } else {
+                    dot.classList.remove('completed');
+                }
+                if (index + 1 === currentScene) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        function goToScene(sceneNum) {
+            if (sceneNum < 1 || sceneNum > totalScenes || sceneNum === currentScene) return;
+
+            transitionOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                const currentSceneEl = document.querySelector(`[data-scene="${currentScene}"]`);
+                const nextSceneEl = document.querySelector(`[data-scene="${sceneNum}"]`);
+                
+                if (currentSceneEl) {
+                    currentSceneEl.classList.remove('active');
+                    currentSceneEl.classList.add('exit');
+                    setTimeout(() => currentSceneEl.classList.remove('exit'), 1200);
+                }
+                
+                if (nextSceneEl) {
+                    nextSceneEl.classList.add('active');
+                }
+                
+                currentScene = sceneNum;
+                stepCounter.textContent = `Step ${currentScene} / ${totalScenes}`;
+                updateProgressDots();
+            }, 300);
+
+            setTimeout(() => {
+                transitionOverlay.classList.remove('active');
+            }, 1000);
+        }
+
+        function nextScene() {
+            if (currentScene < totalScenes) {
+                goToScene(currentScene + 1);
+            } else {
+                stopPlaying();
+            }
+        }
+
+        function startPlaying() {
+            isPlaying = true;
+            playPauseBtn.textContent = '⏸';
+            playInterval = setInterval(nextScene, sceneDuration);
+        }
+
+        function stopPlaying() {
+            isPlaying = false;
+            playPauseBtn.textContent = '▶';
+            clearInterval(playInterval);
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                stopPlaying();
+            } else {
+                if (currentScene === totalScenes) {
+                    restart();
+                }
+                startPlaying();
+            }
+        }
+
+        function restart() {
+            stopPlaying();
+            goToScene(1);
+            setTimeout(startPlaying, 1200);
+        }
+
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        restartBtn.addEventListener('click', restart);
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextScene();
+            if (e.key === 'ArrowLeft' && currentScene > 1) goToScene(currentScene - 1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                togglePlayPause();
+            }
+            if (e.key === 'r' || e.key === 'R') restart();
+        });
+
+        // Initial animation
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loading.classList.add('hide');
+            }, 1500);
+
+            setTimeout(() => {
+                startPlaying();
+            }, 2000);
+        });
+    </script>
+</body>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 </html>

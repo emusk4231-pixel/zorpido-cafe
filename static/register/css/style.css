@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 :root {
     --primary-color: #ff0000;
@@ -228,3 +229,235 @@
         padding: 2rem 1.5rem;
     }
 }
+=======
+
+:root {
+    --primary-color: #ff0000;
+    --secondary-color: #ffe100;
+    --gradient-primary: linear-gradient(135deg, #ff0000 0%, #ff4444 100%);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.register-container {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #fff5f5 0%, #fffaeb 100%);
+    margin: -1rem;
+}
+
+.register-card {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden;
+    border: 3px solid #f0f0f0;
+    animation: fadeInScale 0.6s ease-out;
+}
+
+.register-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.register-header-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.register-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+    font-size: 1.75rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.register-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.register-body {
+    padding: 2.5rem;
+}
+
+.form-label-enhanced {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-control-enhanced {
+    border: 2px solid #e9ecef;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-enhanced:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(255,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.form-help-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    border-left: 3px solid #dc2626;
+}
+
+.required-indicator {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.btn-register {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-register:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(255,0,0,0.4);
+    color: white;
+}
+
+.benefits-section {
+    background: linear-gradient(135deg, #fff5f5, #fffaeb);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+    border: 2px solid #ffe5e5;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.benefit-item:last-child {
+    margin-bottom: 0;
+}
+
+.benefit-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.divider span {
+    padding: 0 1rem;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.login-prompt {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 0.75rem;
+    border: 2px solid #e9ecef;
+}
+
+.link-enhanced {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.link-enhanced::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.link-enhanced:hover::after {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .register-container {
+        padding: 1.5rem 0;
+    }
+    
+    .register-body {
+        padding: 2rem 1.5rem;
+    }
+}
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164

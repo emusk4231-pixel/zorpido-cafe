@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Payment | Order #{{ order.order_number }}{% endblock %}
@@ -246,4 +247,254 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Payment | Order #{{ order.order_number }}{% endblock %}
+{% block meta_description %}
+<!-- Meta Description -->
+<meta name="description" content="Complete payment for Order #{{ order.order_number }} at Zorpido. Choose your preferred payment method and finalize your order quickly and securely.">
+{% endblock %}
+
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'payment_pos/css/style.css' %}">
+
+<div class="container payment-container">
+    <div class="row justify-content-center w-100">
+        <div class="col-lg-9 col-xl-8">
+            <div class="payment-card">
+                <div class="payment-header">
+                    <i class="bi bi-credit-card-2-front display-4"></i>
+                    <h3>Complete Payment</h3>
+                    <p>Order #{{ order.order_number }}</p>
+                </div>
+                
+                <div class="payment-body">
+                    <!-- Order Summary -->
+                    <h5 class="section-title">
+                        <i class="bi bi-receipt"></i>
+                        Order Summary
+                    </h5>
+                    <div class="order-summary-table">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-end">Price</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order.items.all %}
+                                    <tr>
+                                        <td><strong>{{ item.item_name }}</strong></td>
+                                        <td class="text-center">{{ item.quantity }}</td>
+                                        <td class="text-end">NPR {{ item.item_price }}</td>
+                                        <td class="text-end"><strong>NPR {{ item.subtotal }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                        <td class="text-end"><strong>NPR {{ order.subtotal }}</strong></td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td colspan="3" class="text-end">
+                                            <strong>Total:</strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong class="total-amount">NPR {{ order.total }}</strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Customer Info -->
+                    {% if order.customer %}
+                    <div class="customer-info-alert">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-person-circle fs-2 text-primary"></i>
+                            <div>
+                                <strong class="d-block mb-2">
+                                    <i class="bi bi-person-fill me-1"></i>Customer: {{ order.customer.full_name }}
+                                </strong>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-wallet2"></i>
+                                    <span><strong>Credit Balance:</strong> NPR {{ order.customer.credit_balance }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Payment Methods -->
+                    <h5 class="section-title">
+                        <i class="bi bi-credit-card"></i>
+                        Select Payment Method
+                    </h5>
+                    <div class="payment-methods-grid">
+                        <button class="payment-method-btn cash" data-payment="cash" onclick="selectPaymentMethod('cash', this)">
+                            <i class="bi bi-cash payment-icon"></i>
+                            <strong>Cash Payment</strong>
+                            <small>Pay with physical cash</small>
+                        </button>
+                        
+                        <button class="payment-method-btn qr" data-payment="qr" onclick="selectPaymentMethod('qr', this)">
+                            <i class="bi bi-qr-code payment-icon"></i>
+                            <strong>QR Payment</strong>
+                            <small>Digital payment via QR</small>
+                        </button>
+                        
+                        <button class="payment-method-btn credit" data-payment="credit"
+                            onclick="selectPaymentMethod('credit', this)"
+                            {% if not order.customer %}disabled class="payment-method-btn credit disabled"{% endif %}>
+                            <i class="bi bi-wallet2 payment-icon"></i>
+                            <strong>Customer Credit</strong>
+                            {% if not order.customer %}
+                            <small class="text-danger">No customer selected</small>
+                            {% else %}
+                            <small>Use account balance</small>
+                            {% endif %}
+                        </button>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn-complete-payment" id="completeBtn" onclick="completePayment()" disabled>
+                            <i class="bi bi-check-circle-fill fs-4"></i>
+                            <span>Complete Payment - NPR {{ order.total }}</span>
+                        </button>
+                        <a href="{% url 'pos:order_detail' order.id %}" class="btn-back">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden order data for JS -->
+<div id="orderData" style="display:none;"
+     data-credit-balance="{% if order.customer %}{{ order.customer.credit_balance }}{% endif %}"
+     data-order-total="{{ order.total }}"></div>
+
+<script>
+let selectedPaymentMethod = null;
+
+function selectPaymentMethod(method, btnEl) {
+    selectedPaymentMethod = method;
+
+    // Store original disabled states
+    const paymentButtons = Array.from(document.querySelectorAll('.payment-method-btn'));
+    paymentButtons.forEach(b => {
+        if (typeof b.dataset.initialDisabled === 'undefined') {
+            b.dataset.initialDisabled = b.disabled ? 'true' : 'false';
+        }
+    });
+
+    // Reset all buttons
+    paymentButtons.forEach(btn => {
+        if (btn.dataset.initialDisabled === 'true') {
+            btn.setAttribute('disabled', 'disabled');
+            btn.classList.add('disabled');
+        } else {
+            btn.removeAttribute('disabled');
+            btn.classList.remove('disabled');
+        }
+        btn.classList.remove('active');
+    });
+
+    // Mark selected button
+    btnEl.classList.add('active');
+
+    // Enable complete button
+    document.getElementById('completeBtn').disabled = false;
+}
+
+function completePayment() {
+    if (!selectedPaymentMethod) {
+        alert('Please select a payment method');
+        return;
+    }
+    
+    // Check credit balance if credit payment
+    const orderDataEl = document.getElementById('orderData');
+    const creditBalanceRaw = orderDataEl ? orderDataEl.dataset.creditBalance : null;
+    const creditBalance = creditBalanceRaw ? Number(creditBalanceRaw) : null;
+    const orderTotalRaw = orderDataEl ? orderDataEl.dataset.orderTotal : null;
+    const orderTotal = orderTotalRaw ? Number(orderTotalRaw) : null;
+    
+    // No balance validation for credit mode: allow completing order even if balance is 0 or negative.
+    
+    if (!confirm('Confirm payment of NPR {{ order.total }}?')) {
+        return;
+    }
+    
+    const completeBtn = document.getElementById('completeBtn');
+    completeBtn.disabled = true;
+    completeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    
+    // Send payment completion request
+    fetch('{% url "pos:complete_payment" order.id %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            payment_method: selectedPaymentMethod
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Success animation
+            completeBtn.innerHTML = '<i class="bi bi-check-circle-fill fs-4"></i><span>Payment Successful!</span>';
+            completeBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            
+            setTimeout(() => {
+                alert(`Payment completed successfully!\nOrder #${data.order_number}`);
+                window.location.href = '{% url "pos:completed_orders" %}';
+            }, 500);
+        } else {
+            alert('Error: ' + data.error);
+            completeBtn.disabled = false;
+            completeBtn.innerHTML = '<i class="bi bi-check-circle-fill fs-4"></i><span>Complete Payment - NPR {{ order.total }}</span>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to complete payment');
+        completeBtn.disabled = false;
+        completeBtn.innerHTML = '<i class="bi bi-check-circle-fill fs-4"></i><span>Complete Payment - NPR {{ order.total }}</span>';
+    });
+}
+
+// Auto-select payment method if there's only one customer
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects
+    document.querySelectorAll('.payment-method-btn:not(.disabled)').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateY(-5px)';
+            }
+        });
+        btn.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = '';
+            }
+        });
+    });
+});
+</script>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

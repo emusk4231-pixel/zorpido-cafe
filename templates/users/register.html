@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Register | Zorpido{% endblock %}
@@ -229,4 +230,238 @@
         </div>
     </div>
 </div>
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Join Zorpido today! Create your account to enjoy exclusive benefits like loyalty points, special discounts, and birthday rewards. Sign up now for a seamless cafe  experience.">
+{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'register/css/style.css' %}">
+
+<div class="register-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="register-card">
+                    <div class="register-header">
+                        <div class="register-header-icon">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <h3>Join Zorpido Today!</h3>
+                        <p>Create your account and start enjoying exclusive benefits</p>
+                    </div>
+                    
+                    <div class="register-body">
+                        <!-- Benefits Section -->
+                        <div class="benefits-section">
+                            <h5 class="mb-3 fw-bold">
+                                <i class="bi bi-star-fill text-warning me-2"></i>
+                                Membership Benefits
+                            </h5>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="bi bi-gift"></i>
+                                </div>
+                                <span><strong>Loyalty Points</strong> on every purchase</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="bi bi-percent"></i>
+                                </div>
+                                <span><strong>Exclusive Discounts</strong> and special offers</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon">
+                                    <i class="bi bi-calendar-event"></i>
+                                </div>
+                                <span><strong>Birthday Rewards</strong> and surprises</span>
+                            </div>
+                        </div>
+                        
+                        <form id="registerForm" method="post">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="id_full_name" class="form-label-enhanced">
+                                        <i class="bi bi-person"></i>
+                                        Full Name <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="text" name="full_name" id="id_full_name" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="Enter your full name"
+                                           value="{{ form.full_name.value|default:'' }}"
+                                           required>
+                                    {% if form.full_name.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.full_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_email" class="form-label-enhanced">
+                                        <i class="bi bi-envelope"></i>
+                                        Email <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="email" name="email" id="id_email" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="your.email@example.com"
+                                           value="{{ form.email.value|default:'' }}"
+                                           required>
+                                    {% if form.email.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.email.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_phone" class="form-label-enhanced">
+                                        <i class="bi bi-phone"></i>
+                                        Phone <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="tel" name="phone" id="id_phone" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="98XXXXXXXX"
+                                           value="{{ form.phone.value|default:'' }}"
+                                           required>
+                                    <small class="form-help-text">Format: 98XXXXXXXX</small>
+                                    {% if form.phone.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.phone.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_date_of_birth" class="form-label-enhanced">
+                                        <i class="bi bi-calendar-heart"></i>
+                                        Date of Birth <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="date" name="date_of_birth" id="id_date_of_birth" 
+                                           class="form-control form-control-enhanced"
+                                           value="{{ form.date_of_birth.value|default:'' }}"
+                                           required>
+                                    <small class="form-help-text">Get birthday rewards!</small>
+                                    {% if form.date_of_birth.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.date_of_birth.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_location" class="form-label-enhanced">
+                                        <i class="bi bi-geo-alt"></i>
+                                        Location <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="text" name="location" id="id_location" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="City, Area"
+                                           value="{{ form.location.value|default:'' }}"
+                                           required>
+                                    {% if form.location.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.location.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_password1" class="form-label-enhanced">
+                                        <i class="bi bi-lock"></i>
+                                        Password <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="password" name="password1" id="id_password1" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="Create a strong password"
+                                           required>
+                                    {% if form.password1.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.password1.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_password2" class="form-label-enhanced">
+                                        <i class="bi bi-lock-fill"></i>
+                                        Confirm Password <span class="required-indicator">*</span>
+                                    </label>
+                                    <input type="password" name="password2" id="id_password2" 
+                                           class="form-control form-control-enhanced" 
+                                           placeholder="Re-enter your password"
+                                           required>
+                                    {% if form.password2.errors %}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.password2.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <button type="submit" id="registerSubmitBtn" class="btn btn-register mt-3" disabled>
+                                <i class="bi bi-person-check-fill me-2"></i>
+                                Create My Account
+                            </button>
+                        
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="agree_terms" value="on" id="agreeTermsCheckbox" required>
+                            <label class="form-check-label" for="agreeTermsCheckbox">
+                                I have read and agree to the <a href="{% url 'website:terms' %}" target="_blank">Terms &amp; Conditions</a> <span class="required-indicator">*</span>
+                            </label>
+                        </div>
+
+                        <script>
+                        // Disable submit until terms checkbox is checked
+                        (function(){
+                            const form = document.getElementById('registerForm');
+                            const checkbox = document.getElementById('agreeTermsCheckbox');
+                            const submitBtn = document.getElementById('registerSubmitBtn');
+                            if (!form || !checkbox || !submitBtn) return;
+                            // Initialize state
+                            submitBtn.disabled = !checkbox.checked;
+                            checkbox.addEventListener('change', function(){
+                                submitBtn.disabled = !this.checked;
+                            });
+                        })();
+                        </script>
+                        </form>
+                        
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+                        
+                        <div class="login-prompt">
+                            <p class="mb-2 text-muted">Already have an account?</p>
+                            <a href="{% url 'users:login' %}" class="link-enhanced">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Sign in to your account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

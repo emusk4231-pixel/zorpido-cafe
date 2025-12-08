@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Login | Zorpido{% endblock %}
@@ -105,4 +106,113 @@
     </div>
 </div>
 
+=======
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login | Zorpido{% endblock %}
+{% block meta_description %}
+<meta name="description" content="Experience Zorpido — a cozy spot where great food, warm smiles, and memorable moments come together. Relax, dine, and enjoy a taste that feels like home.">
+{% endblock %}
+
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'login_page/css/style.css' %}">
+<div class="login-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="login-card">
+                    <div class="login-header">
+                        <div class="login-header-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h3>Welcome Back!</h3>
+                        <p class="mb-0 opacity-90">Sign in to your account</p>
+                    </div>
+                    
+                    <div class="login-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="form-group-enhanced">
+                                <label for="id_username" class="form-label-enhanced">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" name="username" id="id_username" 
+                                       class="form-control form-control-enhanced" 
+                                       placeholder="Enter your email"
+                                       value="{{ form.username.value|default:'' }}"
+                                       required>
+                                {% if form.username.errors %}
+                                    <div class="error-message">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group-enhanced">
+                                <label for="id_password" class="form-label-enhanced">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Password
+                                </label>
+                                <input type="password" name="password" id="id_password" 
+                                       class="form-control form-control-enhanced" 
+                                       placeholder="Enter your password"
+                                       required>
+                                {% if form.password.errors %}
+                                    <div class="error-message">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ form.password.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="{% url 'users:password_reset' %}" class="link-enhanced">
+                                    Forgot password?
+                                </a>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+                        
+                        <div class="register-prompt">
+                            <p class="mb-2 text-muted">Don't have an account?</p>
+                            <a href="{% url 'users:register' %}" class="link-enhanced">
+                                <i class="bi bi-person-plus me-1"></i>
+                                Create your account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="staff-login-link">
+                    <i class="bi bi-shield-lock-fill me-2"></i>
+                    <strong>Staff Member?</strong>
+                    <a href="{% url 'users:staff_login' %}" class="link-enhanced ms-2">
+                        Staff Login Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
 {% endblock %}

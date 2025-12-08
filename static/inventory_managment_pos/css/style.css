@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
   --primary-red: #DC2626;
   --secondary-red: #EF4444;
@@ -309,3 +310,316 @@
     font-size: 1.5rem;
   }
 }
+=======
+:root {
+  --primary-red: #DC2626;
+  --secondary-red: #EF4444;
+  --accent-yellow: #FBBF24;
+  --light-yellow: #FEF3C7;
+  --dark-red: #991B1B;
+}
+
+.inventory-container {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.page-header {
+  background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.btn-brand-back {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-brand-back:hover {
+  background: white;
+  color: var(--primary-red);
+}
+
+.alert-custom {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+  border: none;
+  border-left: 4px solid var(--primary-red);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+}
+
+.alert-custom i {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+  color: var(--dark-red);
+}
+
+.inventory-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.card-header-custom {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+  padding: 1.25rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  border: none;
+}
+
+.card-header-warning {
+  background: linear-gradient(135deg, var(--accent-yellow), #F59E0B);
+  color: var(--dark-red);
+}
+
+.card-body-custom {
+  padding: 1.5rem;
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-box input {
+  padding: 0.875rem 1.25rem 0.875rem 3rem;
+  border: 2px solid var(--light-yellow);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+  outline: none;
+}
+
+.search-box::before {
+  content: '🔍';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+.table-custom {
+  margin: 0;
+}
+
+.table-custom thead {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+  color: var(--dark-red);
+}
+
+.table-custom thead th {
+  border: none;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+.table-custom tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  transition: all 0.2s ease;
+}
+
+.table-custom tbody tr:hover {
+  background: var(--light-yellow);
+  transform: scale(1.01);
+}
+
+.table-custom tbody td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+}
+
+.badge-custom {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.badge-danger-custom {
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  color: white;
+}
+
+.badge-warning-custom {
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: var(--dark-red);
+}
+
+.badge-success-custom {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+}
+
+.badge-info-custom {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: white;
+}
+
+.btn-action {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-add-stock {
+  background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+  color: white;
+}
+
+.btn-add-stock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  color: white;
+}
+
+.btn-update-stock {
+  background: white;
+  border: 2px solid var(--accent-yellow);
+  color: var(--primary-red);
+}
+
+.btn-update-stock:hover {
+  background: var(--light-yellow);
+  border-color: var(--primary-red);
+  transform: translateY(-2px);
+}
+
+.modal-custom .modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-custom .modal-header {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+  border-radius: 16px 16px 0 0;
+  padding: 1.5rem;
+  border: none;
+}
+
+.modal-custom .modal-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.modal-custom .modal-body {
+  padding: 2rem;
+}
+
+.modal-custom .form-label {
+  font-weight: 600;
+  color: var(--dark-red);
+  margin-bottom: 0.5rem;
+}
+
+.modal-custom .form-control,
+.modal-custom .form-select {
+  border: 2px solid var(--light-yellow);
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.modal-custom .form-control:focus,
+.modal-custom .form-select:focus {
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+  outline: none;
+}
+
+.modal-custom .modal-footer {
+  border: none;
+  padding: 1.5rem;
+  background: #F9FAFB;
+}
+
+.btn-modal-cancel {
+  background: white;
+  border: 2px solid #E5E7EB;
+  color: #6B7280;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-modal-cancel:hover {
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+}
+
+.btn-modal-confirm {
+  background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-modal-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+.current-stock-badge {
+  display: inline-block;
+  background: var(--light-yellow);
+  color: var(--dark-red);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .page-header h2 {
+    font-size: 1.5rem;
+  }
+}
+>>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
