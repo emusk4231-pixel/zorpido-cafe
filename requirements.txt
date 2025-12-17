@@ -5,7 +5,6 @@ psycopg2-binary
 dj-database-url
 python-dotenv
 python-decouple
-<<<<<<< HEAD
 asgiref==3.10.0
 colorama==0.4.6
 Django==5.0.1
@@ -27,26 +26,3 @@ tzdata==2025.2
 whitenoise==6.6.0
 dj-database-url==1.1.0
 reportlab==4.0.0
-=======
-asgiref==3.10.0
-colorama==0.4.6
-Django==5.0.1
-django-cors-headers==4.3.1
-django-debug-toolbar==4.3.0
-django-widget-tweaks==1.5.0
-gunicorn==21.2.0
-packaging==25.0
-pillow==10.2.0
-psycopg2-binary==2.9.9
-pypng==0.20220715.0
-python-dateutil==2.8.2
-python-decouple==3.8
-qrcode==7.4.2
-six==1.17.0
-sqlparse==0.5.3
-typing_extensions==4.15.0
-tzdata==2025.2
-whitenoise==6.6.0
-dj-database-url==1.1.0
-reportlab==4.0.0
->>>>>>> df6fb379555319efdf513182b2e65dbdd28a0164
