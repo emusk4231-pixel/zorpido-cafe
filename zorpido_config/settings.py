@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'gallery.apps.GalleryConfig',
     'website.apps.WebsiteConfig',
     'widget_tweaks',
+    'cloudinary',
+    'cloudinary_storage',
 
 ]
 
@@ -149,12 +151,21 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # use the default staticfiles storage to avoid ManifestStaticFilesError while iterating.
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+else:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # Media files (User uploaded content)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
