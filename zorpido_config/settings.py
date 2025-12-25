@@ -11,13 +11,9 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 
-# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Development-friendly defaults
-# WARNING: These values are for local development only. Don't use in production.
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-local-dev-key')
-# Read DEBUG from environment; default to False for safety in production
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ALLOWED_HOSTS: set a comma-separated list in the env var, e.g. "example.com,sub.example.com"
@@ -29,7 +25,7 @@ if render_hostname:
     ALLOWED_HOSTS.append(render_hostname)
 if not ALLOWED_HOSTS:
     # safe development defaults
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['zorpido.com.np', 'www.zorpido.com.np']
 
 # Application definition
 INSTALLED_APPS = [
