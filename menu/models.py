@@ -5,6 +5,7 @@ Menu models for managing categories and dishes
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils.text import slugify
+from utils.supabase_storage import upload_file
 
 class Category(models.Model):
     """
@@ -46,7 +47,16 @@ class MenuItem(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='menu/', blank=True, null=True)
+    # Store public URL returned by Supabase Storage
+    image = models.URLField(max_length=500, blank=True, null=True, default='')
+
+    def set_image_from_file(self, file_obj, file_name: str = None):
+        """Upload a file to Supabase and set `image` to the returned public URL."""
+        if file_name is None:
+            file_name = getattr(file_obj, 'name', 'menu/unnamed')
+        url = upload_file(file_obj, file_name)
+        self.image = url
+        self.save(update_fields=['image'])
     
     # Pricing
     price = models.DecimalField(

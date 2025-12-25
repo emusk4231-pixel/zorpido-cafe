@@ -125,9 +125,16 @@ def staff_customer_edit(request, pk):
 	if request.method == 'POST':
 		form = StaffCustomerForm(request.POST, request.FILES, instance=customer)
 		if form.is_valid():
-			form.save()
-			messages.success(request, 'Customer updated successfully.')
-			return redirect('users:staff_customer_list')
+			try:
+				form.save()
+				messages.success(request, 'Customer updated successfully.')
+				return redirect('users:staff_customer_list')
+			except Exception as e:
+				try:
+					form.add_error('profile_upload', str(e))
+				except Exception:
+					pass
+				messages.error(request, f'Customer update failed: {e}')
 		else:
 			messages.error(request, 'Please correct the errors below.')
 	else:
@@ -218,13 +225,20 @@ def customer_profile(request):
 	if request.method == 'POST':
 		form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
 		if form.is_valid():
-			# Save the form (handles uploaded files)
-			form.save()
-			# Refresh from DB so subsequent redirect shows updated data
-			request.user.refresh_from_db()
-			messages.success(request, 'Profile updated successfully.')
-			# Redirect to dashboard so changes are immediately visible
-			return redirect('users:dashboard')
+			# Save the form (handles uploaded files). Wrap upload errors
+			# so we can show them inline instead of erroring the request.
+			try:
+				form.save()
+				request.user.refresh_from_db()
+				messages.success(request, 'Profile updated successfully.')
+				return redirect('users:dashboard')
+			except Exception as e:
+				# Attach error to the profile_upload field if possible and re-render form
+				try:
+					form.add_error('profile_upload', str(e))
+				except Exception:
+					pass
+				messages.error(request, f'Profile update failed: {e}')
 		else:
 			messages.error(request, 'Please correct the errors below.')
 	else:

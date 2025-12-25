@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static storage_extras %}
 {% block title %}Gallery | Zorpido{% endblock %}
 {% block meta_description %}
 <meta name="description" content="Explore Zorpido's stunning gallery of moments. Browse through our curated collection of images showcasing our ambiance, dishes, and memorable events.">
@@ -56,9 +56,9 @@
             <div class="col-lg-3 col-md-4 col-sm-6 gallery-item" data-category="{{ image.category }}">
                 <div class="gallery-card">
                     <div class="image-wrapper">
-                        <img src="{{ image.image.url }}" 
-                             class="gallery-image" 
-                             alt="{{ image.title }}"
+                            <img src="{{ image.image|storage_url }}" 
+                                class="gallery-image" 
+                                alt="{{ image.title }}"
                              loading="lazy"
                              data-bs-toggle="modal" 
                              data-bs-target="#imageModal{{ image.id }}">
@@ -97,7 +97,7 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center p-0">
-                            <img src="{{ image.image.url }}" class="img-fluid rounded" alt="{{ image.title }}">
+                            <img src="{{ image.image|storage_url }}" class="img-fluid rounded" alt="{{ image.title }}">
                         </div>
                     </div>
                 </div>

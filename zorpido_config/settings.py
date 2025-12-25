@@ -7,6 +7,7 @@ from pathlib import Path
 from decouple import config
 import os
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 
 
@@ -49,8 +50,7 @@ INSTALLED_APPS = [
     'gallery.apps.GalleryConfig',
     'website.apps.WebsiteConfig',
     'widget_tweaks',
-    'cloudinary',
-    'cloudinary_storage',
+    'utils.apps.UtilsConfig',
 
 ]
 
@@ -92,20 +92,17 @@ WSGI_APPLICATION = 'zorpido_config.wsgi.application'
 
 # ------------------------------
 # DATABASES
-# Prefer a DATABASE_URL env var (Postgres on Render). Fall back to SQLite for local dev.
+# Require a DATABASE_URL environment variable pointing to a PostgreSQL database.
 # ------------------------------
 DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600),
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+if not DATABASE_URL:
+    raise ImproperlyConfigured(
+        'DATABASE_URL environment variable is required and must point to a Postgres database.'
+    )
+
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600),
+}
 
 
 
@@ -151,21 +148,18 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # use the default staticfiles storage to avoid ManifestStaticFilesError while iterating.
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-else:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Keep WhiteNoise storage for static files (production) unless you change it intentionally.
+# DEFAULT_FILE_STORAGE and STATICFILES_STORAGE left to Django/WhiteNoise defaults.
 
 # Media files (User uploaded content)
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
+# Media files (User uploaded content)
+# MEDIA_URL and MEDIA_ROOT: default to BASE_DIR / 'media' unless overridden
+MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
+MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'media')))
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,4 +1,5 @@
 from django.db import models
+from utils.supabase_storage import upload_file
 
 
 class Testimonial(models.Model):
@@ -6,7 +7,16 @@ class Testimonial(models.Model):
 	customer_name = models.CharField(max_length=200)
 	message = models.TextField()
 	rating = models.PositiveSmallIntegerField(default=5)
-	profile_picture = models.ImageField(upload_to='testimonials/', blank=True, null=True)
+	# Store public URL returned by Supabase Storage
+	profile_picture = models.URLField(max_length=500, blank=True, null=True, default='')
+
+	def set_profile_picture_from_file(self, file_obj, file_name: str = None):
+		"""Upload file to Supabase and set `profile_picture` to public URL."""
+		if file_name is None:
+			file_name = getattr(file_obj, 'name', 'testimonials/unnamed')
+		url = upload_file(file_obj, file_name)
+		self.profile_picture = url
+		self.save(update_fields=['profile_picture'])
 	is_active = models.BooleanField(default=True, help_text='Show this testimonial on the homepage')
 	created_at = models.DateTimeField(auto_now_add=True)
 
@@ -22,7 +32,15 @@ class Testimonial(models.Model):
 class FeaturedImage(models.Model):
 	"""Images used in the homepage featured slider. Admin-managed."""
 	title = models.CharField(max_length=200, blank=True)
-	image = models.ImageField(upload_to='featured/', help_text='Recommended: 1280x720 (16:9)')
+ 	# Store public URL for featured image
+	image = models.URLField(max_length=500, help_text='Recommended: 1280x720 (16:9)')
+
+	def set_image_from_file(self, file_obj, file_name: str = None):
+		if file_name is None:
+			file_name = getattr(file_obj, 'name', 'featured/unnamed')
+		url = upload_file(file_obj, file_name)
+		self.image = url
+		self.save(update_fields=['image'])
 	order = models.IntegerField(default=0, help_text='Lower numbers show first')
 	is_active = models.BooleanField(default=True)
 	created_at = models.DateTimeField(auto_now_add=True)

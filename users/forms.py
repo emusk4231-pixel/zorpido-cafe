@@ -6,6 +6,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django.core.exceptions import ValidationError
 from .models import User, CustomerMessage
+from utils.supabase_storage import upload_file
 
 class CustomerRegistrationForm(UserCreationForm):
     """
@@ -209,9 +210,12 @@ class ProfileUpdateForm(forms.ModelForm):
     """
     Form for customers to update their profile
     """
+    # Add a dedicated file input for uploads. The model stores a public URL.
+    profile_upload = forms.FileField(required=False, label='Upload Profile Picture')
+
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone', 'date_of_birth', 'location', 'profile_picture']
+        fields = ['full_name', 'email', 'phone', 'date_of_birth', 'location']
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -226,12 +230,26 @@ class ProfileUpdateForm(forms.ModelForm):
             raise forms.ValidationError('This email address is already in use.')
         return email
 
+    def save(self, commit=True):
+        """Upload any provided profile file to Supabase and store the returned URL."""
+        instance = super().save(commit=False)
+        upload = self.cleaned_data.get('profile_upload')
+        if upload:
+            # build a reasonable storage path using user pk if available
+            filename = f"profile_pictures/{instance.pk or 'user'}_{upload.name}"
+            url = upload_file(upload, filename)
+            instance.profile_picture = url
+        if commit:
+            instance.save()
+        return instance
+
 
 class StaffCustomerForm(forms.ModelForm):
     """Form for staff to edit customer profiles and basic financials."""
+    profile_upload = forms.FileField(required=False, label='Upload Profile Picture')
     class Meta:
         model = User
-        fields = ['full_name', 'email', 'phone', 'date_of_birth', 'location', 'profile_picture', 'loyalty_points', 'credit_balance']
+        fields = ['full_name', 'email', 'phone', 'date_of_birth', 'location', 'loyalty_points', 'credit_balance']
         widgets = {
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -241,6 +259,17 @@ class StaffCustomerForm(forms.ModelForm):
             'loyalty_points': forms.NumberInput(attrs={'class': 'form-control'}),
             'credit_balance': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
         }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        upload = self.cleaned_data.get('profile_upload')
+        if upload:
+            filename = f"profile_pictures/{instance.pk or 'user'}_{upload.name}"
+            url = upload_file(upload, filename)
+            instance.profile_picture = url
+        if commit:
+            instance.save()
+        return instance
 
 
 class CreditAdjustmentForm(forms.Form):

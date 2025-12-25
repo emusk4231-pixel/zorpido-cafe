@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from decimal import Decimal
 from django.core.validators import RegexValidator
+from utils.supabase_storage import upload_file
 
 class User(AbstractUser):
     """
@@ -62,8 +63,25 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     # Profile picture
-    # Store only file path / name as default; template will resolve static/media locations
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True, default='images/default_profile.png')
+    # We now store the public URL returned by Supabase Storage instead of
+    # relying on Cloudinary/Django storage backends. This is a `URLField`.
+    # Use `set_profile_picture_from_file()` to upload a file and set the URL.
+    profile_picture = models.URLField(max_length=500, null=True, blank=True, default='')
+
+    def set_profile_picture_from_file(self, file_obj, file_name: str = None):
+        """
+        Upload `file_obj` to Supabase Storage and update `profile_picture` with
+        the returned public URL. `file_name` is optional — if omitted the
+        uploaded filename will be used as provided by the caller.
+
+        Example: user.set_profile_picture_from_file(request.FILES['avatar'], f"profile_pictures/{user.pk}.jpg")
+        """
+        if file_name is None:
+            # As a fallback, use a simple name; callers should prefer to supply a path
+            file_name = getattr(file_obj, 'name', 'uploads/unnamed')
+        url = upload_file(file_obj, file_name)
+        self.profile_picture = url
+        self.save(update_fields=['profile_picture'])
     
     class Meta:
         verbose_name = "User"

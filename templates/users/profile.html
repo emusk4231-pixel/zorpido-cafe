@@ -2,6 +2,7 @@
      ENHANCED PROFILE PAGE (profile.html)
 ============================================ -->
 {% extends 'base.html' %}
+{% load storage_extras %}
 {% block title %}{{ request.user.first_name|default:request.user.username }}’s Profile | Zorpido{% endblock %}
 {% block meta_description %}
 <!-- Meta Description -->
@@ -556,9 +557,8 @@
                     <div class="zorpido-profile-header">
                         <div class="zorpido-profile-avatar-wrapper">
                             <div class="zorpido-avatar-glow"></div>
-                            {% load static %}
-                            {% if request.user.profile_picture and request.user.profile_picture.name and 'default_profile' not in request.user.profile_picture.name %}
-                                <img src="{{ request.user.profile_picture.url }}" class="zorpido-profile-avatar" alt="Profile">
+                            {% if request.user.profile_picture and 'default_profile' not in request.user.profile_picture %}
+                                <img src="{{ request.user.profile_picture|storage_url }}" class="zorpido-profile-avatar" alt="Profile">
                             {% else %}
                                 <div class="zorpido-profile-avatar">
                                     <i class="bi bi-person-fill"></i>
@@ -584,7 +584,7 @@
 
                             <div class="row">
                                 {% for field in form %}
-                                    {% if field.name != 'profile_picture' %}
+                                    {% if field.name != 'profile_picture' and field.name != 'profile_upload' %}
                                     <div class="col-md-6 zorpido-form-group">
                                         <label class="zorpido-form-label">
                                             {% if field.name == 'full_name' %}
@@ -623,8 +623,8 @@
                                     <span>Profile Picture</span>
                                 </div>
                                 
-                                {% if request.user.profile_picture and request.user.profile_picture.name and 'default_profile' not in request.user.profile_picture.name %}
-                                    <img src="{{ request.user.profile_picture.url }}" class="zorpido-picture-preview" alt="Profile Preview">
+                                {% if request.user.profile_picture and 'default_profile' not in request.user.profile_picture %}
+                                    <img src="{{ request.user.profile_picture|storage_url }}" class="zorpido-picture-preview" alt="Profile Preview">
                                 {% else %}
                                     <div class="zorpido-upload-icon">
                                         <i class="bi bi-cloud-arrow-up"></i>
@@ -634,17 +634,17 @@
                                 <p class="text-muted mb-3">Upload a new profile picture (JPG, PNG, max 5MB)</p>
                                 
                                 <div class="zorpido-file-input-wrapper">
-                                    {{ form.profile_picture }}
-                                    <label for="{{ form.profile_picture.id_for_label }}" class="zorpido-file-label">
+                                    {{ form.profile_upload }}
+                                    <label for="{{ form.profile_upload.id_for_label }}" class="zorpido-file-label">
                                         <i class="bi bi-upload me-2"></i>
                                         Choose File
                                     </label>
                                 </div>
                                 
-                                {% if form.profile_picture.errors %}
+                                {% if form.profile_upload.errors %}
                                     <div class="zorpido-error-message justify-content-center mt-3">
                                         <i class="bi bi-exclamation-circle"></i>
-                                        <span>{{ form.profile_picture.errors }}</span>
+                                        <span>{{ form.profile_upload.errors }}</span>
                                     </div>
                                 {% endif %}
                             </div>

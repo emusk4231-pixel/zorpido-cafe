@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static storage_extras %}
 {% block title %}{{ post.title }} |Zorpido{% endblock %}
 {% block meta_description %}
 <!-- Meta Description -->
@@ -38,7 +38,7 @@
         <!-- Featured Image -->
         {% if post.featured_image %}
         <div class="article-featured-image">
-            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+            <img src="{{ post.featured_image|storage_url }}" alt="{{ post.title }}">
         </div>
         {% endif %}
         

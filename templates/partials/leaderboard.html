@@ -1,4 +1,4 @@
-{% load static %}
+{% load static storage_extras %}
 <style>
 /* ===============================================
    LEADERBOARD SECTION - ZORPIDO CAFÉ
@@ -1588,10 +1588,10 @@
                     <div class="avatar-container">
                         <div class="avatar-ring ring-silver"></div>
                         <div class="avatar-glow glow-silver"></div>
-                        {% if leaderboard_users.1.profile_picture and leaderboard_users.1.profile_picture.url %}
-                        <img src="{{ leaderboard_users.1.profile_picture.url }}"
-                            alt="{{ leaderboard_users.1.full_name|default:leaderboard_users.1.username }}"
-                            class="champion-avatar">
+                        {% if leaderboard_users.1.profile_picture %}
+                        <img src="{{ leaderboard_users.1.profile_picture|storage_url }}"
+                          alt="{{ leaderboard_users.1.full_name|default:leaderboard_users.1.username }}"
+                          class="champion-avatar">
                         {% else %}
                         <img src="{% static 'images/default_profile.png' %}" alt="default avatar"
                             class="champion-avatar">
@@ -1626,10 +1626,10 @@
                     <div class="avatar-container">
                         <div class="avatar-ring ring-gold"></div>
                         <div class="avatar-glow glow-gold"></div>
-                        {% if leaderboard_users.0.profile_picture and leaderboard_users.0.profile_picture.url %}
-                        <img src="{{ leaderboard_users.0.profile_picture.url }}"
-                            alt="{{ leaderboard_users.0.full_name|default:leaderboard_users.0.username }}"
-                            class="champion-avatar">
+                        {% if leaderboard_users.0.profile_picture %}
+                        <img src="{{ leaderboard_users.0.profile_picture|storage_url }}"
+                          alt="{{ leaderboard_users.0.full_name|default:leaderboard_users.0.username }}"
+                          class="champion-avatar">
                         {% else %}
                         <img src="{% static 'images/default_profile.png' %}" alt="default avatar"
                             class="champion-avatar">
@@ -1658,10 +1658,10 @@
                     <div class="avatar-container">
                         <div class="avatar-ring ring-bronze"></div>
                         <div class="avatar-glow glow-bronze"></div>
-                        {% if leaderboard_users.2.profile_picture and leaderboard_users.2.profile_picture.url %}
-                        <img src="{{ leaderboard_users.2.profile_picture.url }}"
-                            alt="{{ leaderboard_users.2.full_name|default:leaderboard_users.2.username }}"
-                            class="champion-avatar">
+                        {% if leaderboard_users.2.profile_picture %}
+                        <img src="{{ leaderboard_users.2.profile_picture|storage_url }}"
+                          alt="{{ leaderboard_users.2.full_name|default:leaderboard_users.2.username }}"
+                          class="champion-avatar">
                         {% else %}
                         <img src="{% static 'images/default_profile.png' %}" alt="default avatar"
                             class="champion-avatar">
@@ -1697,8 +1697,8 @@
                     <div class="rank-number">{{ forloop.counter|add:3 }}</div>
 
                     <div class="user-avatar-small">
-                        {% if user.profile_picture and user.profile_picture.url %}
-                        <img src="{{ user.profile_picture.url }}" alt="{{ user.full_name|default:user.username }}">
+                        {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture|storage_url }}" alt="{{ user.full_name|default:user.username }}">
                         {% else %}
                         <img src="{% static 'images/default_profile.png' %}" alt="default avatar">
                         {% endif %}
