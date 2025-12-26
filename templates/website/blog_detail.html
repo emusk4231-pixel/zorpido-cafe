@@ -38,7 +38,9 @@
         <!-- Featured Image -->
         {% if post.featured_image %}
         <div class="article-featured-image">
-            <img src="{{ post.featured_image|storage_url }}" alt="{{ post.title }}">
+            {% if post.featured_image %}
+            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+            {% endif %}
         </div>
         {% endif %}
         

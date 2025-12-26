@@ -56,12 +56,14 @@
             <div class="col-lg-3 col-md-4 col-sm-6 gallery-item" data-category="{{ image.category }}">
                 <div class="gallery-card">
                     <div class="image-wrapper">
-                            <img src="{{ image.image|storage_url }}" 
+                            {% if image.image %}
+                            <img src="{{ image.image.url }}" 
                                 class="gallery-image" 
                                 alt="{{ image.title }}"
                              loading="lazy"
                              data-bs-toggle="modal" 
                              data-bs-target="#imageModal{{ image.id }}">
+                            {% endif %}
                         <div class="image-overlay">
                             <div class="overlay-content">
                                 <button class="btn btn-light btn-sm rounded-circle zoom-btn" 
@@ -97,7 +99,9 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center p-0">
-                            <img src="{{ image.image|storage_url }}" class="img-fluid rounded" alt="{{ image.title }}">
+                            {% if image.image %}
+                            <img src="{{ image.image.url }}" class="img-fluid rounded" alt="{{ image.title }}">
+                            {% endif %}
                         </div>
                     </div>
                 </div>

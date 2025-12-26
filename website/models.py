@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 from utils.supabase_storage import upload_file
 
 
@@ -8,7 +9,7 @@ class Testimonial(models.Model):
 	message = models.TextField()
 	rating = models.PositiveSmallIntegerField(default=5)
 	# Store public URL returned by Supabase Storage
-	profile_picture = models.URLField(max_length=500, blank=True, null=True, default='')
+	profile_picture = CloudinaryField('profile_picture', blank=True, null=True)
 
 	def set_profile_picture_from_file(self, file_obj, file_name: str = None):
 		"""Upload file to Supabase and set `profile_picture` to public URL."""
@@ -33,12 +34,14 @@ class FeaturedImage(models.Model):
 	"""Images used in the homepage featured slider. Admin-managed."""
 	title = models.CharField(max_length=200, blank=True)
  	# Store public URL for featured image
-	image = models.URLField(max_length=500, help_text='Recommended: 1280x720 (16:9)')
+	image = CloudinaryField('image', help_text='Recommended: 1280x720 (16:9)')
 
 	def set_image_from_file(self, file_obj, file_name: str = None):
 		if file_name is None:
 			file_name = getattr(file_obj, 'name', 'featured/unnamed')
 		url = upload_file(file_obj, file_name)
+		# `upload_file` returns a URL when using default_storage; assign
+		# so legacy callers and templates continue to work.
 		self.image = url
 		self.save(update_fields=['image'])
 	order = models.IntegerField(default=0, help_text='Lower numbers show first')

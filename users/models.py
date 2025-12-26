@@ -5,6 +5,7 @@ Extends Django's AbstractUser to include customer-specific fields
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cloudinary.models import CloudinaryField
 from decimal import Decimal
 from django.core.validators import RegexValidator
 from utils.supabase_storage import upload_file
@@ -62,11 +63,9 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    # Profile picture
-    # We now store the public URL returned by Supabase Storage instead of
-    # relying on Cloudinary/Django storage backends. This is a `URLField`.
-    # Use `set_profile_picture_from_file()` to upload a file and set the URL.
-    profile_picture = models.URLField(max_length=500, null=True, blank=True, default='')
+    # Profile picture — store using CloudinaryField so uploads resolve
+    # to Cloudinary-managed media and `.url` works in templates/admin.
+    profile_picture = CloudinaryField('profile_picture', blank=True, null=True)
 
     def set_profile_picture_from_file(self, file_obj, file_name: str = None):
         """
@@ -77,8 +76,10 @@ class User(AbstractUser):
         Example: user.set_profile_picture_from_file(request.FILES['avatar'], f"profile_pictures/{user.pk}.jpg")
         """
         if file_name is None:
-            # As a fallback, use a simple name; callers should prefer to supply a path
             file_name = getattr(file_obj, 'name', 'uploads/unnamed')
+        # `upload_file` uses Django's `default_storage` — when configured to
+        # Cloudinary this will return a Cloudinary URL. Keep helper for
+        # backward-compatible callers.
         url = upload_file(file_obj, file_name)
         self.profile_picture = url
         self.save(update_fields=['profile_picture'])

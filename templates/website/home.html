@@ -188,9 +188,11 @@
           {% for img in featured_images %}
           <div class="carousel-slide {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
             <div class="slide-inner">
-              <div class="image-container">
+                <div class="image-container">
                 <div class="image-overlay"></div>
-                <img src="{{ img.image|storage_url }}" alt="{{ img.title }}" class="featured-image"> 
+                {% if img.image %}
+                <img src="{{ img.image.url }}" alt="{{ img.title }}" class="featured-image">
+                {% endif %}
                 
                 {% if img.title or img.description %}
                 <div class="image-info-overlay">
@@ -223,7 +225,9 @@
             <button class="thumbnail-item {% if forloop.first %}active{% endif %}" 
                     data-index="{{ forloop.counter0 }}"
                     aria-label="Go to slide {{ forloop.counter }}">
-              <img src="{{ img.image|storage_url }}" alt="{{ img.title }}">
+              {% if img.image %}
+              <img src="{{ img.image.url }}" alt="{{ img.title }}">
+              {% endif %}
               <div class="thumbnail-overlay"></div>
             </button>
             {% endfor %}
@@ -599,7 +603,7 @@
           <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="card menu-card glass-card">
                 {% if featured.menu_item.image %}
-                <img src="{{ featured.menu_item.image|storage_url }}" class="card-img-top" alt="{{ featured.menu_item.name }}">
+                <img src="{{ featured.menu_item.image.url }}" class="card-img-top" alt="{{ featured.menu_item.name }}">
               {% else %}
                 <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" class="card-img-top" alt="{{ featured.menu_item.name }}">
               {% endif %}
@@ -613,7 +617,7 @@
                     data-description="{{ featured.menu_item.description|escapejs }}"
                     data-price="{{ featured.menu_item.price }}"
                     {% if featured.menu_item.image %}
-                      data-image="{{ featured.menu_item.image|storage_url }}"
+                      data-image="{{ featured.menu_item.image.url }}"
                     {% endif %}>
                     <i class="bi bi-info-circle"></i> Details
                   </button>
@@ -722,14 +726,16 @@
           <div class="image-container" 
                data-bs-toggle="modal" 
                data-bs-target="#galleryModal" 
-               data-image="{{ image.image|storage_url }}" 
+               data-image="{% if image.image %}{{ image.image.url }}{% endif %}" 
              data-title="{{ image.title }}"
              data-id="{{ image.pk }}"
              data-index="{{ forloop.counter0 }}">
-                    <img src="{{ image.image|storage_url }}" 
+                    {% if image.image %}
+                    <img src="{{ image.image.url }}" 
                              alt="{{ image.title }}" 
                              class="gallery-image"
                              loading="lazy">
+                    {% endif %}
                         <div class="image-overlay">
                             <div class="overlay-content">
                                 {% if image.title %}
@@ -852,7 +858,7 @@
             <div class="profile-image-wrapper">
               <div class="image-glow"></div>
               {% if t.profile_picture %}
-              <img src="{{ t.profile_picture|storage_url }}" alt="{{ t.customer_name }}" class="customer-photo">
+              <img src="{{ t.profile_picture.url }}" alt="{{ t.customer_name }}" class="customer-photo">
               {% else %}
               <img src="{% static 'images/default_profile.png' %}" alt="{{ t.customer_name }}" class="customer-photo">
               {% endif %}

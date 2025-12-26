@@ -124,7 +124,7 @@
                                          data-item-price="{{ item.price }}"
                                          onclick="addToOrderFromElement(this)">
                                         {% if item.image %}
-                                        <img src="{{ item.image|storage_url }}" class="menu-item-image" alt="{{ item.name }}">
+                                        <img src="{{ item.image.url }}" class="menu-item-image" alt="{{ item.name }}">
                                         {% else %}
                                         <div class="menu-item-placeholder">
                                             <i class="bi bi-image"></i>

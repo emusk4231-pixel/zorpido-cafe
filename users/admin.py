@@ -3,7 +3,6 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django import forms
 from .models import User, CustomerMessage
 from django.utils.html import format_html
-from utils.supabase_storage import upload_file
 
 
 @admin.register(User)
@@ -67,28 +66,9 @@ class UserAdmin(DjangoUserAdmin):
 
 
 	def save_model(self, request, obj, form, change):
-		"""Handle profile file upload from the admin form and store on Supabase.
-
-		If the user is being created (no `pk` yet) we save once to obtain an ID,
-		then upload the file and update the `profile_picture` URL.
-		"""
 		file = form.cleaned_data.get('profile_upload') if form.is_valid() else None
-		# If creating a new object, first save to get a primary key
-		if not change and not obj.pk:
-			super().save_model(request, obj, form, change)
-			# obj now has a pk
-			if file:
-				file_name = f"profile_pictures/{obj.pk}_{file.name}"
-				url = upload_file(file, file_name)
-				obj.profile_picture = url
-				obj.save(update_fields=['profile_picture'])
-			return
-
-		# For updates or if pk exists, upload then save
 		if file:
-			file_name = f"profile_pictures/{obj.pk or 'unknown'}_{file.name}"
-			url = upload_file(file, file_name)
-			obj.profile_picture = url
+			obj.profile_picture = file
 		super().save_model(request, obj, form, change)
 
 

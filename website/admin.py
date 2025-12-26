@@ -2,7 +2,6 @@ from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
 from .models import Testimonial, FeaturedImage
-from utils.supabase_storage import upload_file
 
 
 @admin.register(Testimonial)
@@ -30,7 +29,13 @@ class TestimonialAdmin(admin.ModelAdmin):
 
 	def profile_preview(self, obj):
 		if obj and getattr(obj, 'profile_picture'):
-			return format_html('<img src="{}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;" />', obj.profile_picture)
+			url = None
+			try:
+				url = obj.profile_picture.url
+			except Exception:
+				url = obj.profile_picture if isinstance(obj.profile_picture, str) else None
+			if url:
+				return format_html('<img src="{}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;" />', url)
 		return '-'
 
 	profile_preview.short_description = 'Profile Preview'
@@ -54,23 +59,19 @@ class FeaturedImageAdmin(admin.ModelAdmin):
 
 	def image_preview(self, obj):
 		if obj and getattr(obj, 'image'):
-			return format_html('<img src="{}" style="max-width:200px;max-height:200px;object-fit:cover;" />', obj.image)
+			url = None
+			try:
+				url = obj.image.url
+			except Exception:
+				url = obj.image if isinstance(obj.image, str) else None
+			if url:
+				return format_html('<img src="{}" style="max-width:200px;max-height:200px;object-fit:cover;" />', url)
 		return '-'
 
 	image_preview.short_description = 'Image Preview'
 
 	def save_model(self, request, obj, form, change):
 		file = form.cleaned_data.get('image_upload') if form.is_valid() else None
-		if not change and not obj.pk:
-			super().save_model(request, obj, form, change)
-			if file:
-				file_name = f"featured/{obj.pk}_{file.name}"
-				url = upload_file(file, file_name)
-				obj.image = url
-				obj.save(update_fields=['image'])
-			return
 		if file:
-			file_name = f"featured/{obj.pk or 'unknown'}_{file.name}"
-			url = upload_file(file, file_name)
-			obj.image = url
+			obj.image = file
 		super().save_model(request, obj, form, change)

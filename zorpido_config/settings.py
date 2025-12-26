@@ -8,13 +8,23 @@ from decouple import config
 import os
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+import secrets
+import cloudinary
 
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-local-dev-key')
+# SECRET_KEY must come from the environment in production. Do NOT hardcode secrets.
+# When DEBUG=True and SECRET_KEY is not present we generate a temporary key
+# for local development convenience only (this must NOT be used in production).
+SECRET_KEY = config('SECRET_KEY', default=None)
 DEBUG = config('DEBUG', default=False, cast=bool)
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = secrets.token_urlsafe(50)
+    else:
+        raise ImproperlyConfigured('SECRET_KEY environment variable is required when DEBUG is False')
 
 # ALLOWED_HOSTS: set a comma-separated list in the env var, e.g. "example.com,sub.example.com"
 raw_allowed = config('ALLOWED_HOSTS', default='')
@@ -25,8 +35,10 @@ if render_hostname:
     ALLOWED_HOSTS.append(render_hostname)
 if not ALLOWED_HOSTS:
     # safe development defaults
-    ALLOWED_HOSTS = ['zorpido.com.np', 'www.zorpido.com.np']
-
+    ALLOWED_HOSTS = [
+    "zorpido.com.np",
+    "www.zorpido.com.np",
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,6 +59,8 @@ INSTALLED_APPS = [
     'website.apps.WebsiteConfig',
     'widget_tweaks',
     'utils.apps.UtilsConfig',
+    'cloudinary',
+    'cloudinary_storage',
 
 ]
 
@@ -154,11 +168,47 @@ else:
 
 
 # Keep WhiteNoise storage for static files (production) unless you change it intentionally.
-# DEFAULT_FILE_STORAGE and STATICFILES_STORAGE left to Django/WhiteNoise defaults.
 
-# Media files (User uploaded content)
-# Media files (User uploaded content)
-# MEDIA_URL and MEDIA_ROOT: default to BASE_DIR / 'media' unless overridden
+# Cloudinary configuration for media storage
+# Use environment variables only: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+# Do NOT hardcode Cloudinary credentials in source control.
+CLOUDINARY_CLOUD_NAME = config('CLOUDINARY_CLOUD_NAME', default=None)
+CLOUDINARY_API_KEY = config('CLOUDINARY_API_KEY', default=None)
+CLOUDINARY_API_SECRET = config('CLOUDINARY_API_SECRET', default=None)
+
+if not (CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET):
+    if not DEBUG:
+        raise ImproperlyConfigured('Cloudinary credentials are required when DEBUG is False')
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
+}
+
+# Configure pycloudinary so `cloudinary` operations (if used elsewhere)
+# have the credentials available at runtime.
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+    )
+
+# DEFAULT_FILE_STORAGE configuration
+# Use Cloudinary as the primary storage backend for uploaded media when
+# credentials are provided. For local development (DEBUG=True) this falls
+# back to Django's FileSystemStorage so developers can run without cloud keys.
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    
+else:
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+
+# MEDIA_URL and MEDIA_ROOT are for local development only.
+# When using Cloudinary, DO NOT use MEDIA_URL or MEDIA_ROOT for image access or upload.
+# All image fields must use CloudinaryField and access .url for the CDN URL.
 MEDIA_URL = os.environ.get('MEDIA_URL', '/media/')
 MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'media')))
 

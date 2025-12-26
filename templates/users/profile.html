@@ -558,7 +558,7 @@
                         <div class="zorpido-profile-avatar-wrapper">
                             <div class="zorpido-avatar-glow"></div>
                             {% if request.user.profile_picture and 'default_profile' not in request.user.profile_picture %}
-                                <img src="{{ request.user.profile_picture|storage_url }}" class="zorpido-profile-avatar" alt="Profile">
+                                <img src="{{ request.user.profile_picture.url }}" class="zorpido-profile-avatar" alt="Profile">
                             {% else %}
                                 <div class="zorpido-profile-avatar">
                                     <i class="bi bi-person-fill"></i>
@@ -624,7 +624,7 @@
                                 </div>
                                 
                                 {% if request.user.profile_picture and 'default_profile' not in request.user.profile_picture %}
-                                    <img src="{{ request.user.profile_picture|storage_url }}" class="zorpido-picture-preview" alt="Profile Preview">
+                                    <img src="{{ request.user.profile_picture.url }}" class="zorpido-picture-preview" alt="Profile Preview">
                                 {% else %}
                                     <div class="zorpido-upload-icon">
                                         <i class="bi bi-cloud-arrow-up"></i>

@@ -2,7 +2,6 @@ from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
 from .models import Category, MenuItem, FeaturedMenu
-from utils.supabase_storage import upload_file
 
 
 @admin.register(Category)
@@ -14,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(MenuItem)
 class MenuItemAdmin(admin.ModelAdmin):
-	# Provide a file upload in the admin even though `image` is a URLField.
+	# Provide a file upload in the admin; `image` is now a CloudinaryField.
 	class MenuItemAdminForm(forms.ModelForm):
 		image_upload = forms.FileField(required=False, label='Upload Image')
 
@@ -32,28 +31,23 @@ class MenuItemAdmin(admin.ModelAdmin):
 
 	def image_preview(self, obj):
 		if obj and getattr(obj, 'image'):
-			return format_html('<img src="{}" style="max-width:200px;max-height:200px;object-fit:cover;" />', obj.image)
+			# Support both CloudinaryField (object with `.url`) and
+			# legacy string URLs stored in the database.
+			url = None
+			try:
+				url = obj.image.url
+			except Exception:
+				url = obj.image if isinstance(obj.image, str) else None
+			if url:
+				return format_html('<img src="{}" style="max-width:200px;max-height:200px;object-fit:cover;" />', url)
 		return '-'
 
 	image_preview.short_description = 'Image Preview'
 
 	def save_model(self, request, obj, form, change):
-		"""Handle file uploaded via `image_upload`, upload to Supabase, store public URL."""
 		file = form.cleaned_data.get('image_upload') if form.is_valid() else None
-		# If creating, save first to get PK
-		if not change and not obj.pk:
-			super().save_model(request, obj, form, change)
-			if file:
-				file_name = f"menu/{obj.pk}_{file.name}"
-				url = upload_file(file, file_name)
-				obj.image = url
-				obj.save(update_fields=['image'])
-			return
-
 		if file:
-			file_name = f"menu/{obj.pk or 'unknown'}_{file.name}"
-			url = upload_file(file, file_name)
-			obj.image = url
+			obj.image = file
 		super().save_model(request, obj, form, change)
 
 

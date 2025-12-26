@@ -18,7 +18,7 @@
       <div class="menu-card-enhanced">
         <div class="card-image-container">
           {% if item.image %}
-          <img src="{{ item.image|storage_url }}" class="menu-image" alt="{{ item.name }}">
+          <img src="{{ item.image.url }}" class="menu-image" alt="{{ item.name }}">
           {% else %}
           <div class="menu-placeholder">
             <i class="bi bi-image-fill"></i>
@@ -44,7 +44,7 @@
               data-category="{{ category.name }}"
               data-price="{{ item.price }}"
               data-description="{{ item.description }}"
-              data-image="{% if item.image %}{{ item.image|storage_url }}{% endif %}"
+              data-image="{% if item.image %}{{ item.image.url }}{% endif %}"
               data-vegetarian="{{ item.is_vegetarian }}"
               data-spicy="{{ item.is_spicy }}"
               data-instock="{{ item.is_in_stock }}"
